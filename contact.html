@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Max Haditsch</title>
+  <meta name="description" content="Get in touch with Max Haditsch for brand strategy, identity design and creative direction. Based in Vienna, Austria." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://maxhaditsch.com/contact.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://maxhaditsch.com/contact.html" />
+  <meta property="og:title" content="Contact — Max Haditsch" />
+  <meta property="og:description" content="Get in touch with Max Haditsch for brand strategy, identity design and creative direction. Based in Vienna, Austria." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact — Max Haditsch" />
+  <meta name="twitter:description" content="Get in touch with Max Haditsch for brand strategy, identity design and creative direction. Based in Vienna, Austria." />
+
+  <link rel="stylesheet" href="https://use.typekit.net/xdm2jjs.css" />
+  <!-- Apply theme before first paint — default: dark; resets on new session -->
+  <script>try{var t=sessionStorage.getItem('theme')||'dark';if(t==='light')document.documentElement.classList.add('light');}catch(e){}</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="sanity.js"></script>
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --bg:       #080808;
+      --surface:  #111111;
+      --text:     #EDEBE6;
+      --muted:    #9C9C9C;
+      --accent:   #C8461A;
+      --border:   #1E1E1A;
+      --font:     'area-inktrap', sans-serif;
+      --ease-expo: cubic-bezier(0.87, 0, 0.13, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      /* Form-specific: weiße Kontur im Dark Mode */
+      --form-border:      rgba(237, 235, 230, 0.32);
+      --form-border-cb:   rgba(237, 235, 230, 0.55);
+    }
+
+    html.light {
+      --bg:       #FFFFFF;
+      --surface:  #F5F5F3;
+      --text:     #0C0C0A;
+      --muted:    #888880;
+      --border:   #D4D1CA;
+      /* Form-specific: graue Kontur im Light Mode */
+      --form-border:      #C0BDB8;
+      --form-border-cb:   #A8A5A0;
+    }
+
+    html.light #menu-overlay { background: #FFFFFF; }
+
+    /* ─── RESET ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: auto;
+      overflow-x: hidden;
+    }
+
+    body { min-height: 100vh; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    * { cursor: none !important; }
+
+    /* ─── CUSTOM CURSOR ──────────────────────── */
+    #cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out),
+                  background 0.2s ease, border-radius 0.25s var(--ease-out), opacity 0.2s ease;
+      will-change: transform;
+    }
+
+    #cursor.hover {
+      width: 48px; height: 48px;
+      background: transparent;
+      border: 1px solid var(--text);
+      mix-blend-mode: difference;
+    }
+
+    #cursor.hidden { opacity: 0; }
+
+    /* ─── NAVIGATION ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1.75rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 500;
+    }
+
+    #nav-logo {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    #nav-cmd {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.125rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    #nav-cmd kbd {
+      font-family: var(--font);
+      font-size: 1.125rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+    }
+
+    #nav-menu-btn {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    #nav-menu-btn:hover { color: var(--text); }
+
+    /* ─── FULLSCREEN MENU OVERLAY ────────────── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: #050505;
+      z-index: 800;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 3rem 2.5rem;
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0s;
+      pointer-events: none; /* Safari: clip-path doesn't block pointer events */
+    }
+
+    #menu-overlay.open { clip-path: inset(0 0 0% 0); pointer-events: all; }
+    .menu-items { list-style: none; margin-bottom: 3rem; }
+
+    .menu-item {
+      overflow: hidden;
+      padding: 0.2rem 0 0.35em;
+      margin-bottom: -0.35em;
+    }
+
+    .menu-item a {
+      display: block;
+      font-size: clamp(2.5rem, 6.5vw, 6rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--muted);
+      transform: translateY(100%);
+      transition: color 0.2s ease;
+    }
+
+    @media (min-width: 1800px) {
+      .menu-item a { font-size: clamp(6rem, 8vw, 9.5rem); }
+    }
+
+    .menu-item a:hover { color: var(--text); }
+
+    .menu-item a .item-num {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      vertical-align: super;
+      margin-right: 0.5rem;
+      color: var(--muted);
+    }
+
+    .menu-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    .menu-footer-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .menu-footer-label { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .menu-footer-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+
+    #menu-close-btn {
+      position: absolute;
+      top: 1.75rem; right: 2.5rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: color 0.2s ease;
+    }
+    #menu-close-btn:hover { color: var(--text); }
+
+    .hover-line { transition: opacity 0.2s ease; }
+    .hover-line:hover { opacity: 0.6; }
+
+    /* ─── COMMAND PALETTE ─────────────────────── */
+    #cmd-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.8);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      z-index: 900;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 20vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    #cmd-overlay.open { opacity: 1; pointer-events: all; }
+
+    #cmd-box {
+      width: min(520px, 90vw);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #cmd-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      font-family: var(--font);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      outline: none;
+    }
+
+    #cmd-results { list-style: none; max-height: 320px; overflow-y: auto; }
+
+    .cmd-result {
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.1s ease;
+    }
+
+    .cmd-result:hover,
+    .cmd-result.active { background: color-mix(in srgb, var(--border) 50%, var(--surface)); }
+    .cmd-result-label { font-size: 0.875rem; color: var(--text); }
+    .cmd-result-tag { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ─── FIXED THEME TOGGLE ─────────────────── */
+    #controls {
+      position: fixed;
+      bottom: 1.75rem;
+      right: 2.5rem;
+      z-index: 600;
+      pointer-events: none;
+    }
+
+    .controls-theme-toggle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text);
+      background: linear-gradient(to right, var(--text) 50%, transparent 50%);
+      cursor: pointer;
+      pointer-events: all;
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .controls-theme-toggle:hover { transform: rotate(180deg); }
+
+    .ctrl-group { display: flex; align-items: center; gap: 0.25rem; pointer-events: all; }
+
+    .ctrl-btn {
+      font-family: var(--font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 0.2rem 0.4rem;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    .ctrl-btn:hover { color: var(--text); }
+    .ctrl-btn.active { color: var(--text); }
+    .ctrl-divider { font-size: 0.75rem; color: var(--border); pointer-events: none; }
+
+    /* ─── PAGE FOOTER BAR ────────────────────── */
+    .footer-bar {
+      padding: 1.5rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 10rem;
+    }
+    .footer-bar-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-bar-label { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .footer-bar-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+
+    /* ─── CONTACT PAGE ───────────────────────── */
+    .contact-page {
+      padding: 12rem 2.5rem 6rem;
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .contact-left {}
+
+    .contact-headline {
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      margin-bottom: 2rem;
+    }
+
+    .contact-intro {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 360px;
+    }
+
+    .contact-direct {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .contact-direct-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .contact-direct-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .contact-direct-val {
+      font-size: 0.9375rem;
+      color: var(--text);
+    }
+
+    .contact-direct-val a {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.1em;
+      transition: border-color 0.2s ease;
+    }
+
+    .contact-direct-val a:hover { border-color: var(--muted); }
+
+    /* ─── FORM ────────────────────────────────── */
+    .contact-form { display: flex; flex-direction: column; gap: 2rem; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .form-input,
+    .form-textarea {
+      font-family: var(--font);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--form-border);
+      padding: 0.75rem 0;
+      outline: none;
+      transition: border-color 0.2s ease;
+      width: 100%;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--text);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--muted);
+      opacity: 0.5;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.7;
+    }
+
+    /* ─── CHECKBOX & RECAPTCHA ────────────────── */
+    .form-consent {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .form-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .form-checkbox-row input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 1.5px solid var(--form-border-cb);
+      border-radius: 2px;
+      background: transparent;
+      margin-top: 0.15rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      cursor: pointer !important;
+    }
+
+    .form-checkbox-row input[type="checkbox"]:checked {
+      background: var(--text);
+      border-color: var(--text);
+    }
+
+    .form-checkbox-label {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .form-checkbox-label a {
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.05em;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-checkbox-label a:hover { border-color: var(--muted); }
+
+    .recaptcha-wrap {
+      transform: scale(0.9);
+      transform-origin: left top;
+    }
+
+    /* ─── SUBMIT BUTTON ──────────────────────── */
+    .form-submit {
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--text);
+      padding: 0.75rem 1.75rem;
+      border-radius: 9999px;
+      align-self: flex-start;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+
+    .form-submit:hover:not(:disabled) {
+      color: var(--text);
+      background: var(--surface);
+    }
+
+    .form-submit:disabled {
+      opacity: 0.25;
+      cursor: not-allowed !important;
+    }
+
+    /* ─── CONFIRMATION MESSAGE ────────────────── */
+    .form-confirmation {
+      display: none;
+      padding: 3rem 0;
+    }
+
+    .form-confirmation.visible {
+      display: block;
+    }
+
+    .confirmation-headline {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .confirmation-text {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* Reveal utility */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 768px) {
+      #nav { padding: 1.25rem 1.5rem; }
+      #nav-cmd { display: none; }
+      .contact-page { padding: 7rem 1.5rem 4rem; grid-template-columns: 1fr; gap: 4rem; }
+      .form-row { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bar { flex-direction: column; align-items: flex-start; gap: 1.25rem; padding: 1.5rem; }
+      .menu-item a { font-size: clamp(3rem, 12vw, 9.5rem); line-height: 1.2; }
+      .menu-item { padding: 0.35rem 0 0.5em; }
+      .menu-items { margin-bottom: 2rem; }
+      .menu-footer { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- FULLSCREEN MENU OVERLAY -->
+  <div id="menu-overlay" role="dialog" aria-label="Navigation">
+    <button id="menu-close-btn" aria-label="Close menu">[ close ]</button>
+    <ul class="menu-items">
+      <li class="menu-item"><a href="work.html" class="nav-link"><span class="item-num">01</span>Work</a></li>
+      <li class="menu-item"><a href="explore.html" class="nav-link"><span class="item-num">02</span>Explore</a></li>
+      <li class="menu-item"><a href="index.html#services" class="nav-link"><span class="item-num">03</span>Services</a></li>
+      <li class="menu-item"><a href="about.html" class="nav-link"><span class="item-num">04</span>About</a></li>
+      <li class="menu-item"><a href="contact.html" class="nav-link"><span class="item-num">05</span>Contact</a></li>
+    </ul>
+    <div class="menu-footer">
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Based in</span>
+        <span class="menu-footer-val">Vienna, Austria</span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Contact</span>
+        <span class="menu-footer-val"><a href="mailto:office@maxhaditsch.com" class="hover-line">office@maxhaditsch.com</a></span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+        <span class="menu-footer-val"><a href="privacy.html" class="hover-line">Privacy Policy</a></span>
+      </div>
+      <div class="menu-footer-col" style="display:none;">
+        <div class="ctrl-group">
+          <button class="ctrl-btn" id="menu-btn-de" onclick="setLang('de')">DE</button>
+          <span class="ctrl-divider">/</span>
+          <button class="ctrl-btn active" id="menu-btn-en" onclick="setLang('en')">EN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMAND PALETTE -->
+  <div id="cmd-overlay" role="dialog" aria-label="Command palette">
+    <div id="cmd-box">
+      <input id="cmd-input" type="text" placeholder="Navigate or search..." autocomplete="off" />
+      <ul id="cmd-results">
+        <li class="cmd-result active" data-href="index.html"><span class="cmd-result-label">Home</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="work.html"><span class="cmd-result-label">Work</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="explore.html"><span class="cmd-result-label">Explore</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="index.html#services"><span class="cmd-result-label">Services</span><span class="cmd-result-tag">Section</span></li>
+        <li class="cmd-result" data-href="about.html"><span class="cmd-result-label">About</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="contact.html"><span class="cmd-result-label">Contact</span><span class="cmd-result-tag">Page</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FIXED NAVIGATION -->
+  <nav id="nav">
+    <a id="nav-logo" href="index.html" class="hover-line">&#169; MH</a>
+    <span id="nav-cmd"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+    <button id="nav-menu-btn" aria-label="Open menu" data-de="[ Men&#252; ]" data-en="[ Menu ]">[ Menu ]</button>
+  </nav>
+
+  <!-- FIXED THEME TOGGLE -->
+  <div id="controls">
+    <div class="controls-theme-toggle" id="controls-theme-toggle" role="button" aria-label="Toggle theme" tabindex="0"></div>
+  </div>
+
+  <!-- CONTACT PAGE CONTENT -->
+  <div class="contact-page">
+
+    <!-- LEFT COLUMN -->
+    <div class="contact-left">
+      <h1 class="contact-headline reveal" data-de="Get in touch." data-en="Get in touch.">Get in touch.</h1>
+      <p class="contact-intro reveal" data-de="Schreib mir eine Nachricht und ich melde mich so schnell wie m&#246;glich bei dir." data-en="Send me a message and I&#8217;ll get back to you as soon as possible.">Send me a message and I&#8217;ll get back to you as soon as possible.</p>
+
+      <div class="contact-direct reveal">
+        <div class="contact-direct-item">
+          <span class="contact-direct-label">Email</span>
+          <span class="contact-direct-val"><a href="mailto:office@maxhaditsch.com">office@maxhaditsch.com</a></span>
+        </div>
+        <div class="contact-direct-item">
+          <span class="contact-direct-label">Tel.</span>
+          <span class="contact-direct-val"><a href="tel:+436769033338">+43 676 90 333 38</a></span>
+        </div>
+        <div class="contact-direct-item">
+          <span class="contact-direct-label">LinkedIn</span>
+          <span class="contact-direct-val"><a href="https://www.linkedin.com/in/max-r-haditsch" target="_blank" rel="noopener">Max R. Haditsch</a></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN — FORM -->
+    <div class="contact-right">
+      <form id="contact-form" class="contact-form" action="https://formsubmit.co/office@maxhaditsch.com" method="POST">
+        <!-- FormSubmit config -->
+        <input type="hidden" name="_subject" value="Neue Nachricht via maxhaditsch.com" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="text" name="_honey" style="display:none" />
+
+        <div class="form-row reveal">
+          <div class="form-group">
+            <label class="form-label" for="name" data-de="Name" data-en="Name">Name</label>
+            <input class="form-input" type="text" id="name" name="name" placeholder="Max Mustermann" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email" data-de="E-Mail" data-en="Email">Email</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="max@example.com" required />
+          </div>
+        </div>
+
+        <div class="form-group reveal">
+          <label class="form-label" for="subject" data-de="Betreff" data-en="Subject">Subject</label>
+          <input class="form-input" type="text" id="subject" name="subject" placeholder="" />
+        </div>
+
+        <div class="form-group reveal">
+          <label class="form-label" for="message" data-de="Nachricht" data-en="Message">Message</label>
+          <textarea class="form-textarea" id="message" name="message" placeholder="" required></textarea>
+        </div>
+
+        <div class="form-consent reveal">
+          <div class="form-checkbox-row">
+            <input type="checkbox" id="privacy-check" />
+            <label class="form-checkbox-label" for="privacy-check" data-de="Ich stimme der Verarbeitung meiner Daten gem&#228;&#223; der <a href='#'>Datenschutzerkl&#228;rung</a> zu." data-en="I agree to the processing of my data in accordance with the <a href='privacy.html'>Privacy Policy</a>.">I agree to the processing of my data in accordance with the <a href='privacy.html'>Privacy Policy</a>.</label>
+          </div>
+
+          <div class="recaptcha-wrap">
+            <div class="g-recaptcha" data-sitekey="6Legcr4sAAAAADkfyvoKJgT0AHVeVjef5l5QxkMO" data-callback="onRecaptcha" data-expired-callback="onRecaptchaExpired"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="form-submit" id="submit-btn" disabled data-de="Nachricht senden" data-en="Send message">Send message</button>
+      </form>
+
+      <!-- CONFIRMATION -->
+      <div class="form-confirmation" id="form-confirmation">
+        <h2 class="confirmation-headline" data-de="Nachricht gesendet." data-en="Message sent.">Message sent.</h2>
+        <p class="confirmation-text" data-de="Vielen Dank f&#252;r deine Nachricht. Ich melde mich so schnell wie m&#246;glich bei dir." data-en="Thank you for your message. I&#8217;ll get back to you as soon as possible.">Thank you for your message. I&#8217;ll get back to you as soon as possible.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-bar">
+      <div class="footer-bar-col">
+        <span class="footer-bar-label">Based in</span>
+        <span class="footer-bar-val">Vienna, Austria</span>
+      </div>
+      <div class="footer-bar-col">
+        <span class="footer-bar-label">Contact</span>
+        <span class="footer-bar-val">office@maxhaditsch.com</span>
+      </div>
+      <div class="footer-bar-col">
+        <span class="footer-bar-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+        <span class="footer-bar-val"><a href="privacy.html" class="hover-line">Privacy Policy</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ─── CURSOR ─── */
+    const cursorEl = document.getElementById('cursor');
+    let mouseX = -100, mouseY = -100, curX = -100, curY = -100;
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+    document.addEventListener('mouseleave', () => cursorEl.classList.add('hidden'));
+    document.addEventListener('mouseenter', () => cursorEl.classList.remove('hidden'));
+
+    (function animateCursor() {
+      curX += (mouseX - curX) * 0.14;
+      curY += (mouseY - curY) * 0.14;
+      cursorEl.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(animateCursor);
+    })();
+
+    document.querySelectorAll('a, button, .controls-theme-toggle, input, textarea, label[for]').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorEl.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursorEl.classList.remove('hover'));
+    });
+
+    /* ─── SCROLL REVEALS ─── */
+    gsap.utils.toArray('.reveal').forEach(el => {
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+
+    /* ─── NAVIGATION — FULLSCREEN OVERLAY ─── */
+    const menuOverlay = document.getElementById('menu-overlay');
+    const menuItems = menuOverlay.querySelectorAll('.menu-item a');
+    const menuFooter = menuOverlay.querySelector('.menu-footer');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+    const navMenuBtn = document.getElementById('nav-menu-btn');
+    let menuOpen = false;
+
+    function openMenu() {
+      menuOpen = true;
+      menuOverlay.classList.add('open');
+      navMenuBtn.textContent = '';
+      gsap.to(menuOverlay, { clipPath: 'inset(0 0 0% 0)', duration: 0.8, ease: 'power4.inOut' });
+      gsap.to(menuItems, { y: '0%', duration: 0.9, stagger: 0.06, ease: 'power4.out', delay: 0.3 });
+      gsap.to(menuFooter, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.6 });
+      menuCloseBtn.style.pointerEvents = 'auto';
+      gsap.to(menuCloseBtn, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', delay: 0.5 });
+    }
+
+    function closeMenu() {
+      menuOpen = false;
+      navMenuBtn.textContent = '[ Menu ]';
+      gsap.to(menuItems, { y: '100%', duration: 0.5, stagger: 0.04, ease: 'power3.in' });
+      gsap.to(menuFooter, { opacity: 0, y: 20, duration: 0.3 });
+      gsap.to(menuCloseBtn, { opacity: 0, y: -8, duration: 0.3, onComplete: () => { menuCloseBtn.style.pointerEvents = 'none'; } });
+      gsap.to(menuOverlay, {
+        clipPath: 'inset(0 0 100% 0)', duration: 0.7, ease: 'power4.inOut', delay: 0.2,
+        onComplete: () => menuOverlay.classList.remove('open')
+      });
+    }
+
+    navMenuBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+    menuCloseBtn.addEventListener('click', closeMenu);
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    /* ─── COMMAND PALETTE ─── */
+    const cmdOverlay = document.getElementById('cmd-overlay');
+    const cmdInput = document.getElementById('cmd-input');
+    const getCR = () => document.querySelectorAll('#cmd-results .cmd-result');
+    let selectedIdx = 0;
+
+    function openCmdPalette() { cmdOverlay.classList.add('open'); cmdInput.value = ''; cmdInput.focus(); resetCmdResults(); }
+    function closeCmdPalette() { cmdOverlay.classList.remove('open'); }
+    function resetCmdResults() {
+      getCR().forEach((r, i) => { r.classList.toggle('active', i === 0); r.style.display = ''; });
+      selectedIdx = 0;
+    }
+
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); cmdOverlay.classList.contains('open') ? closeCmdPalette() : openCmdPalette(); }
+      if (e.key === 'Escape') { closeCmdPalette(); if (menuOpen) closeMenu(); }
+      if (cmdOverlay.classList.contains('open')) {
+        const visible = [...getCR()].filter(r => r.style.display !== 'none');
+        if (e.key === 'ArrowDown') { e.preventDefault(); visible[selectedIdx]?.classList.remove('active'); selectedIdx = Math.min(selectedIdx + 1, visible.length - 1); visible[selectedIdx]?.classList.add('active'); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); visible[selectedIdx]?.classList.remove('active'); selectedIdx = Math.max(selectedIdx - 1, 0); visible[selectedIdx]?.classList.add('active'); }
+        if (e.key === 'Enter') {
+          const active = visible[selectedIdx];
+          if (active) { window.location.href = active.dataset.href; closeCmdPalette(); }
+        }
+      }
+    });
+
+    cmdOverlay.addEventListener('click', e => { if (e.target === cmdOverlay) closeCmdPalette(); });
+    cmdInput.addEventListener('input', () => {
+      const q = cmdInput.value.toLowerCase();
+      selectedIdx = 0;
+      getCR().forEach(r => { const label = r.querySelector('.cmd-result-label').textContent.toLowerCase(); r.style.display = (!q || label.includes(q)) ? '' : 'none'; r.classList.remove('active'); });
+      const firstVisible = [...getCR()].find(r => r.style.display !== 'none');
+      if (firstVisible) firstVisible.classList.add('active');
+    });
+
+    document.getElementById('nav-cmd').addEventListener('click', openCmdPalette);
+
+    /* ─── LANGUAGE SWITCH ─── */
+    function setLang(lang) {
+      document.querySelectorAll('[data-de][data-en]').forEach(el => {
+        const val = el.dataset[lang];
+        if (!val) return;
+        el.innerHTML = val.includes('<') ? val : '';
+        if (!val.includes('<')) el.textContent = val;
+      });
+      document.getElementById('menu-btn-de').classList.toggle('active', lang === 'de');
+      document.getElementById('menu-btn-en').classList.toggle('active', lang === 'en');
+    }
+
+    /* ─── THEME SWITCH (persisted via sessionStorage — resets on new tab/session) ─── */
+    let currentTheme = 'dark'; try { currentTheme = sessionStorage.getItem('theme') || 'dark'; } catch(e) {}
+    function setTheme(theme) {
+      currentTheme = theme;
+      try { sessionStorage.setItem('theme', theme); } catch(e) {}
+      document.documentElement.classList.toggle('light', theme === 'light');
+    }
+    setTheme(currentTheme);
+    document.getElementById('controls-theme-toggle').addEventListener('click', () => {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ─── SANITY CONTENT LOADER ─── */
+    async function loadContactContent() {
+      try {
+        const contact = await Sanity.getContactPage()
+        if (!contact) return
+        if (contact.seo) Sanity.applySeoMeta(contact.seo, 'Contact — Max Haditsch')
+
+        const setLang = (selector, en, de) => {
+          const el = document.querySelector(selector)
+          if (!el) return
+          if (en) { el.setAttribute('data-en', en); el.textContent = en }
+          if (de)   el.setAttribute('data-de', de)
+        }
+
+        setLang('.contact-headline',      contact.headline,              contact.headline_de)
+        setLang('.contact-intro',         contact.introText,             contact.introText_de)
+        setLang('.confirmation-headline', contact.confirmationHeadline,  contact.confirmationHeadline_de)
+        setLang('.confirmation-text',     contact.confirmationText,      contact.confirmationText_de)
+        // Footer email & phone
+        if (contact.email) {
+          document.querySelectorAll('a[href^="mailto"]').forEach(el => {
+            el.href = `mailto:${contact.email}`
+            if (el.textContent.includes('@')) el.textContent = contact.email
+          })
+        }
+        if (contact.phone) {
+          document.querySelectorAll('a[href^="tel"]').forEach(el => {
+            el.href = `tel:${contact.phone.replace(/\s/g, '')}`
+            el.textContent = contact.phone
+          })
+        }
+      } catch (err) {
+        console.warn('Sanity contact load failed:', err.message)
+      }
+    }
+    loadContactContent()
+
+    /* ─── FORM VALIDATION — SUBMIT GATING ─── */
+    const privacyCheck = document.getElementById('privacy-check');
+    const submitBtn = document.getElementById('submit-btn');
+    let recaptchaOk = false;
+
+    function updateSubmitState() {
+      submitBtn.disabled = !(privacyCheck.checked && recaptchaOk);
+    }
+
+    privacyCheck.addEventListener('change', updateSubmitState);
+
+    /* reCAPTCHA callbacks (global) */
+    window.onRecaptcha = function() {
+      recaptchaOk = true;
+      updateSubmitState();
+    };
+    window.onRecaptchaExpired = function() {
+      recaptchaOk = false;
+      updateSubmitState();
+    };
+
+    /* ─── FORM SUBMIT → CONFIRMATION ─── */
+    const contactForm = document.getElementById('contact-form');
+    const confirmation = document.getElementById('form-confirmation');
+
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(contactForm);
+
+      fetch(contactForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(res => {
+        // Show confirmation regardless (FormSubmit may redirect)
+        contactForm.style.display = 'none';
+        confirmation.classList.add('visible');
+        gsap.fromTo(confirmation, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
+      }).catch(() => {
+        contactForm.style.display = 'none';
+        confirmation.classList.add('visible');
+        gsap.fromTo(confirmation, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
+      });
+    });
+  </script>
+
+  <script>
+    Sanity.populateCmdPalette();
+  </script>
+
+</body>
+</html>

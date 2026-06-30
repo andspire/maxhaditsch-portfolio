@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore — Max Haditsch</title>
+  <meta name="description" content="A creative universe of brands, photography and more." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://maxhaditsch.com/explore.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://maxhaditsch.com/explore.html" />
+  <meta property="og:title" content="Explore — Max Haditsch" />
+  <meta property="og:description" content="A creative universe of brands, photography and more." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Explore — Max Haditsch" />
+  <meta name="twitter:description" content="A creative universe of brands, photography and more." />
+
+  <link rel="stylesheet" href="https://use.typekit.net/xdm2jjs.css" />
+  <!-- Apply theme before first paint — default: dark; resets on new session -->
+  <script>try{var t=sessionStorage.getItem('theme')||'dark';if(t==='light')document.documentElement.classList.add('light');}catch(e){}</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+  <script src="sanity.js"></script>
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --bg:       #080808;
+      --surface:  #111111;
+      --text:     #EDEBE6;
+      --muted:    #9C9C9C;
+      --accent:   #C8461A;
+      --border:   #1E1E1A;
+      --font:     'area-inktrap', sans-serif;
+      --ease-expo: cubic-bezier(0.87, 0, 0.13, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html.light {
+      --bg:       #FFFFFF;
+      --surface:  #F5F5F3;
+      --text:     #0C0C0A;
+      --muted:    #888880;
+      --border:   #D4D1CA;
+    }
+
+    html.light #menu-overlay { background: #FFFFFF; }
+    html.light .eo-backdrop { background: rgba(255, 255, 255, 0.6); }
+    html.light .eo-panel { background: #FFFFFF; }
+
+    /* ─── RESET ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    a { color: inherit; text-decoration: none; }
+    * { cursor: none !important; }
+
+    /* ─── CUSTOM CURSOR ──────────────────────── */
+    #cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out),
+                  background 0.2s ease, border-radius 0.25s var(--ease-out), opacity 0.2s ease;
+      will-change: transform;
+    }
+
+    #cursor.hover {
+      width: 48px; height: 48px;
+      background: transparent;
+      border: 1px solid var(--text);
+      mix-blend-mode: difference;
+    }
+
+    #cursor.hidden { opacity: 0; }
+
+    /* Zoom-Cursor auf dem aktiven Slide */
+    #cursor.zoom {
+      width: 40px; height: 40px;
+      background: transparent;
+      border: 1px solid var(--text);
+      border-radius: 50%;
+    }
+    #cursor.zoom::after {
+      content: '+';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    /* Arrow-Formen — aktiv wenn Popup offen */
+    body.popup-open #cursor.arrow-prev,
+    body.popup-open #cursor.arrow-next {
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      mix-blend-mode: normal;
+      width: 36px;
+      height: 28px;
+    }
+
+    body.popup-open #cursor.arrow-prev .cursor-arrow-prev,
+    body.popup-open #cursor.arrow-next .cursor-arrow-next {
+      display: block;
+    }
+
+    .cursor-arrow {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cursor-arrow line,
+    .cursor-arrow polyline {
+      stroke: var(--text);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    /* ─── NAVIGATION (matches index.html) ── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1.75rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 500;
+      mix-blend-mode: normal;
+    }
+
+    #nav-logo {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    #nav-cmd {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.125rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    #nav-cmd kbd {
+      font-family: var(--font);
+      font-size: 1.125rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+    }
+
+    #nav-menu-btn {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    #nav-menu-btn:hover { color: var(--text); }
+
+    /* ─── FULLSCREEN MENU OVERLAY ────────────── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: #050505;
+      z-index: 800;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 3rem 2.5rem;
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0s;
+      pointer-events: none; /* Safari: clip-path doesn't block pointer events */
+    }
+
+    #menu-overlay.open { clip-path: inset(0 0 0% 0); pointer-events: all; }
+
+    .menu-items { list-style: none; margin-bottom: 3rem; }
+
+    .menu-item {
+      overflow: hidden;
+      padding: 0.2rem 0 0.35em;
+      margin-bottom: -0.35em;
+    }
+
+    .menu-item a {
+      display: block;
+      font-size: clamp(2.5rem, 6.5vw, 6rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--muted);
+      transform: translateY(100%);
+      transition: color 0.2s ease;
+    }
+
+    @media (min-width: 1800px) {
+      .menu-item a { font-size: clamp(6rem, 8vw, 9.5rem); }
+    }
+
+    .menu-item a:hover { color: var(--text); }
+
+    .menu-item a .item-num {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      vertical-align: super;
+      margin-right: 0.5rem;
+      color: var(--muted);
+    }
+
+    .menu-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    .menu-footer-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .menu-footer-label { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .menu-footer-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+
+    #menu-close-btn {
+      position: absolute;
+      top: 1.75rem; right: 2.5rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: color 0.2s ease;
+    }
+    #menu-close-btn:hover { color: var(--text); }
+
+    .hover-line { transition: opacity 0.2s ease; }
+    .hover-line:hover { opacity: 0.6; }
+
+    /* ─── ⌘K COMMAND PALETTE ─────────────────── */
+    #cmd-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.8);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      z-index: 900;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 20vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    #cmd-overlay.open { opacity: 1; pointer-events: all; }
+
+    #cmd-box {
+      width: min(520px, 90vw);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #cmd-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      font-family: var(--font);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      outline: none;
+    }
+
+    #cmd-results { list-style: none; max-height: 320px; overflow-y: auto; }
+
+    .cmd-result {
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.1s ease;
+    }
+
+    .cmd-result:hover,
+    .cmd-result.active { background: color-mix(in srgb, var(--border) 50%, var(--surface)); }
+    .cmd-result-label { font-size: 0.875rem; color: var(--text); }
+    .cmd-result-tag { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ─── FIXED THEME TOGGLE (bottom-right) ─── */
+    #controls {
+      position: fixed;
+      bottom: 1.75rem;
+      right: 2.5rem;
+      z-index: 600;
+      pointer-events: none;
+    }
+
+    .controls-theme-toggle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text);
+      background: linear-gradient(to right, var(--text) 50%, transparent 50%);
+      cursor: pointer;
+      pointer-events: all;
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .controls-theme-toggle:hover { transform: rotate(180deg); }
+
+    .ctrl-group { display: flex; align-items: center; gap: 0.25rem; pointer-events: all; }
+
+    .ctrl-btn {
+      font-family: var(--font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 0.2rem 0.4rem;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    .ctrl-btn:hover { color: var(--text); }
+    .ctrl-btn.active { color: var(--text); }
+    .ctrl-divider { font-size: 0.75rem; color: var(--border); pointer-events: none; }
+
+    /* ─── PAGE FOOTER BAR ────────────────────── */
+    .footer-bar {
+      padding: 1.5rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 10rem;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-bar-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-bar-label { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .footer-bar-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+
+    /* ─── FILTER BAR ─────────────────────────── */
+    #filter-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 1.75rem 2.5rem;
+      padding-top: 5rem;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0.4rem;
+      flex-shrink: 0;
+      background: transparent;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    #filter-bar::-webkit-scrollbar { display: none; }
+
+    .explore-filter {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--muted);
+      padding: 0.3rem 0.75rem;
+      color: var(--muted);
+      border-radius: 9999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .explore-filter:hover { color: var(--text); border-color: var(--muted); }
+
+    .explore-filter.active {
+      color: var(--bg);
+      background: var(--text);
+      border-color: var(--text);
+    }
+
+    /* ─── CANVAS AREA ───────────────────────── */
+    #canvas-wrap {
+      position: fixed;
+      inset: 0;
+      overflow: auto;
+      cursor: grab;
+      scrollbar-width: none;
+    }
+
+    #canvas-wrap::-webkit-scrollbar { display: none; }
+    #canvas-wrap.grabbing { cursor: grabbing; }
+
+    #canvas-inner {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    #canvas-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* ─── TILES (image only, no labels) ──────── */
+    .explore-tile {
+      position: absolute;
+      background: var(--surface);
+      overflow: hidden;
+      transition: border-color 0.2s ease, opacity 0.35s ease, transform 0.4s var(--ease-out);
+    }
+
+    .explore-tile.dim {
+      opacity: 0.07;
+      pointer-events: none;
+    }
+
+    .tile-img {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+    }
+
+    /* ─── EXPLORE POPUP ─────────────────────── */
+    #explore-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 850;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    #explore-overlay.open { pointer-events: all; }
+
+    .eo-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.55);
+      -webkit-backdrop-filter: blur(28px);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    #explore-overlay.open .eo-backdrop { opacity: 1; }
+
+    .eo-panel {
+      position: relative;
+      z-index: 1;
+      width: min(1160px, 94vw);
+      max-height: 92vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--surface);
+      border: none;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.45s ease, transform 0.45s var(--ease-out);
+      scrollbar-width: thin;
+      scrollbar-color: var(--muted) transparent;
+    }
+
+    #explore-overlay.open .eo-panel { opacity: 1; transform: translateY(0); }
+    .eo-panel::-webkit-scrollbar { width: 4px; }
+    .eo-panel::-webkit-scrollbar-track { background: transparent; }
+    .eo-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+    .eo-panel::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    .eo-close {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      z-index: 10;
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: none;
+      border: none;
+      padding: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .eo-close:hover { opacity: 0.5; }
+
+    .eo-feature {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 21 / 9; /* Popup immer breitformatig */
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .eo-feature-placeholder { font-size: 0.875rem; color: var(--muted); }
+
+    .eo-title-section {
+      padding: 2.5rem 2.5rem 2.5rem;
+    }
+
+    .eo-title {
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      padding-bottom: 0.12em;
+    }
+
+    .eo-body {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+    }
+
+    .eo-info-col {
+      padding: 0 2.5rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .eo-meta-cols {
+      display: flex;
+      gap: 3rem;
+    }
+
+    .eo-meta-col-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .eo-meta-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .eo-meta-val {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .eo-desc-col {
+      padding: 0 2.5rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .eo-desc {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+    .eo-desc .desc-para { margin: 0 0 1em; }
+    .eo-desc .desc-para:last-child { margin-bottom: 0; }
+    .eo-desc-wrap { position: relative; }
+    .eo-desc-wrap.is-collapsed .eo-desc { max-height: 10rem; overflow: hidden; }
+    .eo-desc-fade { display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 3.5rem; background: linear-gradient(to bottom, transparent, var(--bg)); pointer-events: none; }
+    .eo-desc-wrap.is-collapsed .eo-desc-fade { display: block; }
+    .eo-desc-toggle { display: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: var(--muted); background: none; border: none; padding: 0; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; margin-top: 0.25rem; }
+    .eo-desc-toggle:hover { color: var(--text); }
+
+    .eo-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .eo-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--muted);
+      padding: 0.25rem 0.65rem;
+      color: var(--muted);
+      border-radius: 9999px;
+    }
+
+    /* Unified layout: Feature image + meta + desc + gallery — always all visible */
+
+    /* ─── COMPACT: Title-Section angepasst ─── */
+    .eo-panel.compact .eo-title-section {
+      padding: 2.5rem 2.5rem 2rem;
+      position: relative;
+    }
+
+    .eo-panel.compact .eo-title {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      padding-right: 6rem; /* Platz für Close-Button */
+    }
+
+    /* Close-Button für Compact-Layout (kein Feature-Bild als Träger) */
+    .eo-close-compact {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: none;
+      border: none;
+      padding: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .eo-close-compact:hover { opacity: 0.5; }
+
+    /* ─── COMPACT: Key-Facts-Leiste ─── */
+    .eo-compact-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 2rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Meta-Items (Jahr, Agentur) horizontal als Label·Wert-Paare */
+    .eo-compact-meta .eo-meta-col-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .eo-compact-meta .eo-meta-label::after {
+      content: ':';
+    }
+
+    /* Tags inline, kein Zeilenumbruch erzwingen */
+    .eo-compact-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* ─── COMPACT: Slideshow ─── */
+    .eo-gallery {
+      padding: 0 0 2.5rem;
+    }
+
+    .eo-gallery-viewport {
+      overflow: hidden;
+      position: relative;
+      height: clamp(240px, 52vh, 580px);
+    }
+
+    .eo-gallery-track {
+      display: flex;
+      gap: 1rem;
+      transition: transform 0.5s var(--ease-out);
+      will-change: transform;
+      height: 100%;
+    }
+
+    .eo-gallery-slide {
+      flex-shrink: 0;
+      height: 100%;
+      background: transparent;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    /* Bild füllt Slide vollständig — Slide-Breite wird per JS auf Seitenverhältnis gesetzt */
+    .eo-gallery-slide img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Platzhalter-Slide ohne Bild: 16:9 als Fallback */
+    .eo-gallery-slide--placeholder {
+      width: 640px; /* 360 * 16/9 */
+    }
+
+    /* Klick-Zonen entfernt — Logik läuft per mousemove/click auf .eo-gallery-viewport */
+
+    .eo-gallery-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.5rem 2.5rem 0;
+    }
+
+    .eo-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .eo-dot.active { background: var(--text); transform: scale(1.4); }
+    .eo-dot:hover:not(.active) { background: var(--muted); }
+
+    /* ── Mobile filter toggle button ── */
+    #filter-toggle-btn {
+      display: none;
+      position: fixed;
+      top: 4.5rem; left: 1.5rem;
+      z-index: 210;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    #filter-toggle-btn svg {
+      width: 1rem; height: 1rem;
+      stroke: var(--muted);
+      transition: stroke 0.2s ease;
+      pointer-events: none;
+    }
+    #filter-toggle-btn:hover { border-color: var(--muted); }
+    #filter-toggle-btn:hover svg { stroke: var(--text); }
+    #filter-toggle-btn.active {
+      background: var(--text);
+      border-color: var(--text);
+    }
+    #filter-toggle-btn.active svg { stroke: var(--bg); }
+
+    /* ─── LIGHTBOX ───────────────────────────── */
+    #eo-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(8, 8, 8, 0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #eo-lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #eo-lightbox-inner {
+      max-width: 92vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #eo-lightbox-img {
+      max-width: 92vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      display: block;
+      object-fit: contain;
+      transform: scale(0.96);
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    #eo-lightbox.open #eo-lightbox-img {
+      transform: scale(1);
+    }
+
+    #eo-lightbox-close {
+      position: absolute;
+      top: 1.75rem;
+      right: 2.5rem;
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      transition: color 0.2s ease;
+    }
+
+    #eo-lightbox-close:hover { color: var(--text); }
+
+    /* Zoom-Cursor auf dem aktiven Slide */
+    .eo-gallery-slide.is-active { cursor: none; }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 768px) {
+      #nav { padding: 1.25rem 1.5rem; }
+      #nav-cmd { display: none; }
+      .menu-overlay { padding: 2rem 1.5rem; }
+      .menu-item a { font-size: clamp(3rem, 12vw, 9.5rem); line-height: 1.2; }
+      .menu-item { padding: 0.35rem 0 0.5em; }
+      .menu-items { margin-bottom: 2rem; }
+      .menu-footer { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+      .eo-body { display: flex !important; flex-direction: column; gap: 0; }
+      .eo-info-col { order: 1; padding: 0 1.5rem 1.5rem; }
+      .eo-desc-col { order: 2; padding: 0 1.5rem 1.5rem; }
+      .eo-title-section { padding: 1.5rem 1.5rem; }
+      .eo-title { font-size: clamp(1.6rem, 6vw, 2.25rem); }
+      .po-title { font-size: clamp(1.6rem, 6vw, 2.25rem); }
+      .po-body { display: flex !important; flex-direction: column; }
+      .po-info-col { padding: 0 1.5rem 1rem; }
+      .po-desc-col { padding: 0 1.5rem 1.5rem; }
+      .po-gallery-viewport { height: clamp(240px, 55vw, 400px); }
+      .eo-compact-meta { gap: 0 2rem; }
+
+      /* Filter dropdown panel — hidden until toggled on mobile */
+      #filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 6rem 1.5rem 1.25rem;
+        top: 0; left: 0; right: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        overflow: hidden;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-bottom-width: 0;
+        transition: max-height 0.35s ease, padding 0.35s ease, border-bottom-width 0.35s ease;
+      }
+      #filter-bar.mobile-open {
+        max-height: 400px;
+        padding-top: 7.5rem;
+        padding-bottom: 1.25rem;
+        border-bottom-width: 1px;
+      }
+      #filter-toggle-btn { display: flex; }
+      .explore-filter[data-filter="all"] { display: none; }
+      .eo-gallery-viewport { height: 260px; }
+      .eo-gallery-slide--placeholder { width: 462px; /* 260 * 16/9 */ }
+    }
+
+    /* ─── PROJEKT-OVERLAY (von work.html) ─── */
+    #project-overlay {
+      position: fixed; inset: 0; z-index: 900;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    #project-overlay.open { opacity: 1; pointer-events: all; }
+    .po-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(8,8,8,0.7); -webkit-backdrop-filter: blur(8px);
+      background: rgba(8,8,8,0.7); backdrop-filter: blur(8px);
+    }
+    html.light .po-backdrop { background: rgba(255,255,255,0.7); -webkit-backdrop-filter: blur(8px); }
+    html.light .po-backdrop { background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); }
+    .po-panel {
+      position: relative; z-index: 1;
+      width: min(1160px, 94vw); max-height: 92vh;
+      overflow-y: auto; overflow-x: hidden;
+      background: var(--surface);
+      transform: translateY(20px); transition: transform 0.35s var(--ease-out);
+      scrollbar-width: thin; scrollbar-color: var(--muted) transparent;
+    }
+    html.light .po-panel { background: #fff; }
+    #project-overlay.open .po-panel { transform: translateY(0); }
+    .po-panel::-webkit-scrollbar { width: 4px; }
+    .po-panel::-webkit-scrollbar-thumb { background: var(--border); }
+    .po-close {
+      position: absolute; top: 1.5rem; right: 2rem; z-index: 10;
+      font-family: var(--font); font-size: 0.875rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text); background: none; border: none; padding: 0;
+      transition: opacity 0.2s ease;
+    }
+    .po-close:hover { opacity: 0.5; }
+    .po-feature {
+      position: relative; width: 100%; aspect-ratio: 21/9;
+      background: var(--surface); display: flex; align-items: center;
+      justify-content: center; overflow: hidden;
+    }
+    .po-feature img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .po-feature .lottie-wrap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+    .po-feature .lottie-wrap svg { width: 100% !important; height: 100% !important; }
+    .po-feature-placeholder { font-size: 0.875rem; color: var(--muted); }
+    .po-title-section { padding: 2.5rem 2.5rem 2.5rem; }
+    .po-title { font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; }
+    .po-body { display: grid; grid-template-columns: 2fr 3fr; }
+    .po-info-col { padding: 0 2.5rem 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .po-meta-cols { display: flex; gap: 3rem; }
+    .po-meta-col-item { display: flex; flex-direction: column; gap: 0.4rem; }
+    .po-meta-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .po-meta-val { font-size: 0.9375rem; color: var(--text); }
+    .po-desc-col { padding: 0 2.5rem 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .po-desc { font-size: 0.9375rem; color: var(--muted); line-height: 1.85; }
+    .po-desc .desc-para { margin: 0 0 1em; }
+    .po-desc .desc-para:last-child { margin-bottom: 0; }
+    .po-desc-wrap { position: relative; }
+    .po-desc-wrap.is-collapsed .po-desc { max-height: 10rem; overflow: hidden; }
+    .po-desc-fade { display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 3.5rem; background: linear-gradient(to bottom, transparent, var(--bg)); pointer-events: none; }
+    .po-desc-wrap.is-collapsed .po-desc-fade { display: block; }
+    .desc-toggle { display: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; color: var(--muted); background: none; border: none; padding: 0; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; margin-top: 0.25rem; }
+    .desc-toggle:hover { color: var(--text); }
+    .po-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .po-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--muted); padding: 0.25rem 0.65rem; color: var(--muted); border-radius: 9999px; }
+    .po-gallery { padding-top: 2.5rem; }
+    .gal-edge { position: absolute; top: 0; bottom: 0; width: 5rem; z-index: 5; }
+    .gal-edge-prev { left: 0; } .gal-edge-next { right: 0; }
+    .po-gallery-viewport { overflow: hidden; position: relative; height: clamp(240px, 52vh, 580px); }
+    .po-gallery-track { display: flex; height: 100%; gap: 1rem; transition: transform 0.5s var(--ease-out); will-change: transform; }
+    .po-gallery-slide { flex-shrink: 0; height: 100%; background: transparent; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .po-gallery-slide img, .po-gallery-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .po-gallery-slide .lottie-wrap { width: 100%; height: 100%; position: absolute; inset: 0; }
+    .po-gallery-dots { display: flex; justify-content: center; gap: 0.5rem; padding: 1.5rem 2.5rem 2rem; }
+    .po-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
+    .po-dot.active { background: var(--text); transform: scale(1.4); }
+    .po-dot:hover:not(.active) { background: var(--muted); }
+    #po-lightbox { position: fixed; inset: 0; z-index: 1100; background: rgba(8,8,8,0.96); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    #po-lightbox.open { opacity: 1; pointer-events: all; }
+    #po-lightbox-img { max-width: 92vw; max-height: 90vh; display: flex; align-items: center; justify-content: center; }
+    #po-lightbox-img img { max-width: 92vw; max-height: 90vh; width: auto; height: auto; display: block; object-fit: contain; transform: scale(0.96); transition: transform 0.35s var(--ease-out); }
+    #po-lightbox.open #po-lightbox-img img { transform: scale(1); }
+    #po-lightbox-close { position: absolute; top: 2rem; right: 2rem; font-family: var(--font); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.85); background: none; border: none; transition: opacity 0.2s ease; }
+    #po-lightbox-close:hover { opacity: 0.5; }
+  </style>
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+
+  <div id="cursor">
+    <svg class="cursor-arrow cursor-arrow-prev" viewBox="0 0 36 28"><line x1="34" y1="14" x2="4" y2="14"/><polyline points="14,3 3,14 14,25"/></svg>
+    <svg class="cursor-arrow cursor-arrow-next" viewBox="0 0 36 28"><line x1="2" y1="14" x2="32" y2="14"/><polyline points="22,3 33,14 22,25"/></svg>
+  </div>
+
+  <!-- FULLSCREEN MENU OVERLAY -->
+  <div id="menu-overlay" role="dialog" aria-label="Navigation">
+    <button id="menu-close-btn" aria-label="Close menu">[ close ]</button>
+    <ul class="menu-items">
+      <li class="menu-item"><a href="work.html" class="nav-link"><span class="item-num">01</span>Work</a></li>
+      <li class="menu-item"><a href="explore.html" class="nav-link"><span class="item-num">02</span>Explore</a></li>
+      <li class="menu-item"><a href="index.html#services" class="nav-link"><span class="item-num">03</span>Services</a></li>
+      <li class="menu-item"><a href="about.html" class="nav-link"><span class="item-num">04</span>About</a></li>
+      <li class="menu-item"><a href="contact.html" class="nav-link"><span class="item-num">05</span>Contact</a></li>
+    </ul>
+    <div class="menu-footer">
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Based in</span>
+        <span class="menu-footer-val">Vienna, Austria</span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Contact</span>
+        <span class="menu-footer-val"><a href="mailto:office@maxhaditsch.com" class="hover-line">office@maxhaditsch.com</a></span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+        <span class="menu-footer-val"><a href="privacy.html" class="hover-line">Privacy Policy</a></span>
+      </div>
+      <div class="menu-footer-col" style="display:none;">
+        <div class="ctrl-group">
+          <button class="ctrl-btn" id="menu-btn-de" onclick="setLang('de')">DE</button>
+          <span class="ctrl-divider">/</span>
+          <button class="ctrl-btn active" id="menu-btn-en" onclick="setLang('en')">EN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⌘K COMMAND PALETTE -->
+  <div id="cmd-overlay" role="dialog" aria-label="Command palette">
+    <div id="cmd-box">
+      <input id="cmd-input" type="text" placeholder="Navigate or search projects…" autocomplete="off" />
+      <ul id="cmd-results">
+        <li class="cmd-result active" data-href="index.html"><span class="cmd-result-label">Home</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="work.html"><span class="cmd-result-label">Work — Case Studies</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="explore.html"><span class="cmd-result-label">Explore — Creative Universe</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="index.html#services"><span class="cmd-result-label">Services</span><span class="cmd-result-tag">Section</span></li>
+        <li class="cmd-result" data-href="about.html"><span class="cmd-result-label">About</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="contact.html"><span class="cmd-result-label">Contact</span><span class="cmd-result-tag">Page</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FIXED NAVIGATION -->
+  <nav id="nav">
+    <a id="nav-logo" href="index.html" class="hover-line">&#169; MH</a>
+    <span id="nav-cmd"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+    <button id="nav-menu-btn" aria-label="Open menu" data-de="[ Men&#252; ]" data-en="[ Menu ]">[ Menu ]</button>
+  </nav>
+
+  <!-- FIXED THEME TOGGLE (bottom-right) -->
+  <div id="controls">
+    <div class="controls-theme-toggle" id="controls-theme-toggle" role="button" aria-label="Toggle theme" tabindex="0"></div>
+  </div>
+
+  <!-- MOBILE FILTER TOGGLE (only visible on mobile) -->
+  <button id="filter-toggle-btn" aria-label="Toggle filter">
+    <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke-linecap="round">
+      <line x1="2" y1="4" x2="14" y2="4"/>
+      <line x1="4" y1="8" x2="12" y2="8"/>
+      <line x1="6" y1="12" x2="10" y2="12"/>
+    </svg>
+  </button>
+
+  <!-- FILTER BAR -->
+  <div id="filter-bar">
+    <span class="explore-filter active" data-filter="all">All</span>
+    <span class="explore-filter" data-filter="identity">Identity Design</span>
+    <span class="explore-filter" data-filter="photo">Photography</span>
+    <span class="explore-filter" data-filter="web">Web Design</span>
+    <span class="explore-filter" data-filter="logo">Logo Design</span>
+    
+    
+  </div>
+
+  <!-- INFINITE CANVAS -->
+  <div id="canvas-wrap">
+    <div id="canvas-inner"></div>
+  </div>
+
+  <!-- EXPLORE POPUP OVERLAY -->
+  <div id="explore-overlay" role="dialog" aria-label="Explore detail">
+    <div class="eo-backdrop" id="eo-backdrop"></div>
+
+    <div class="eo-panel" id="eo-panel">
+
+      <!-- Feature image + close -->
+      <div class="eo-feature" id="eo-feature">
+        <span class="eo-feature-placeholder">Feature Image</span>
+        <button class="eo-close" id="eo-close">[ close ]</button>
+      </div>
+
+      <!-- Title -->
+      <div class="eo-title-section">
+        <h2 class="eo-title" id="eo-title"></h2>
+      </div>
+
+      <!-- Body: Year/Agency + Description + Tags -->
+      <div class="eo-body">
+        <div class="eo-info-col">
+          <div class="eo-meta-cols">
+            <div class="eo-meta-col-item">
+              <span class="eo-meta-label" data-de="Jahr" data-en="Year">Year</span>
+              <span class="eo-meta-val" id="eo-year">—</span>
+            </div>
+            <div class="eo-meta-col-item" id="eo-agency-col">
+              <span class="eo-meta-label" data-de="Agentur" data-en="Agency">Agency</span>
+              <span class="eo-meta-val" id="eo-agency">—</span>
+            </div>
+          </div>
+          <div class="eo-tags" id="eo-tags"></div>
+        </div>
+        <div class="eo-desc-col">
+          <div class="eo-desc-wrap" id="eo-desc-wrap">
+            <div class="eo-desc" id="eo-desc"></div>
+            <div class="eo-desc-fade"></div>
+          </div>
+          <button class="eo-desc-toggle" id="eo-desc-toggle">Read more</button>
+        </div>
+      </div>
+
+      <!-- Gallery slideshow -->
+      <div class="eo-gallery" id="eo-gallery">
+        <div class="eo-gallery-viewport">
+          <div class="eo-gallery-track" id="eo-gallery-track">
+            <div class="eo-gallery-slide" id="eo-gal-0"></div>
+            <div class="eo-gallery-slide" id="eo-gal-1"></div>
+            <div class="eo-gallery-slide" id="eo-gal-2"></div>
+          </div>
+          <!-- Klick & Cursor werden per JS gegen die aktive Slide-Breite geprüft -->
+        </div>
+        <div class="eo-gallery-dots">
+          <span class="eo-dot active" data-slide="0"></span>
+          <span class="eo-dot" data-slide="1"></span>
+          <span class="eo-dot" data-slide="2"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Lightbox: muss VOR dem Script stehen, damit getElementById() es findet -->
+  <div id="eo-lightbox" role="dialog" aria-label="Fullscreen preview">
+    <button id="eo-lightbox-close" aria-label="Schließen">[ close ]</button>
+    <div id="eo-lightbox-inner">
+      <img id="eo-lightbox-img" src="" alt="" />
+    </div>
+  </div>
+
+  <!-- Projekt-Overlay (identisch zu work.html) -->
+  <div id="project-overlay" role="dialog" aria-label="Project detail">
+    <div class="po-backdrop" id="po-backdrop"></div>
+    <div class="po-panel">
+      <div class="po-feature" id="po-feature">
+        <span class="po-feature-placeholder">Feature Image</span>
+        <button class="po-close" id="po-close">[ close ]</button>
+      </div>
+      <div class="po-title-section">
+        <h2 class="po-title" id="po-title"></h2>
+      </div>
+      <div class="po-body">
+        <div class="po-info-col">
+          <div class="po-meta-cols">
+            <div class="po-meta-col-item">
+              <span class="po-meta-label">Year</span>
+              <span class="po-meta-val" id="po-year">—</span>
+            </div>
+            <div class="po-meta-col-item" id="po-agency-col">
+              <span class="po-meta-label">Agency</span>
+              <span class="po-meta-val" id="po-agency">—</span>
+            </div>
+          </div>
+          <div class="po-tags" id="po-tags"></div>
+        </div>
+        <div class="po-desc-col">
+          <div class="po-desc-wrap" id="po-desc-wrap">
+            <div class="po-desc" id="po-desc"></div>
+            <div class="po-desc-fade"></div>
+          </div>
+          <button class="desc-toggle" id="desc-toggle">Read more</button>
+        </div>
+      </div>
+      <div class="po-gallery">
+        <div class="po-gallery-viewport">
+          <div class="po-gallery-track" id="po-gallery-track"></div>
+          <div class="gal-edge gal-edge-prev" id="gal-edge-prev"></div>
+          <div class="gal-edge gal-edge-next" id="gal-edge-next"></div>
+        </div>
+        <div class="po-gallery-dots"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projekt-Lightbox -->
+  <div id="po-lightbox">
+    <div id="po-lightbox-img"></div>
+    <button id="po-lightbox-close">[ close ]</button>
+  </div>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ─── EXPLORE DATA ─── */
+    // Bilder hinzufügen: images: ['images/explore/dateiname.jpg', 'images/explore/dateiname2.jpg']
+    // Alle Pfade sind relativ zu explore.html. Der Slider passt Hochformat/Querformat automatisch an.
+    const EXPLORE_ITEMS = [];
+
+    /* ─── AUTO-LAYOUT: neue Items automatisch platzieren ─── */
+    function seededRand(seed) {
+      let s = seed;
+      return function() {
+        s = (s * 1664525 + 1013904223) & 0xffffffff;
+        return (s >>> 0) / 0xffffffff;
+      };
+    }
+
+    function computeLayout(items) {
+      // Organische Anordnung — echter Zufall, kein Scoring, kein Raster
+      const CANVAS_W = 11000, CANVAS_H = 1600;
+      const MARGIN = 100;
+      const MARGIN_Y = 80;
+      const MIN_W = 160, MAX_W = 500;
+      const MIN_GAP = 160;
+
+      const layouts = [];
+
+      function overlaps(a, b) {
+        return !(a.x + a.w + MIN_GAP < b.x || b.x + b.w + MIN_GAP < a.x ||
+                 a.y + a.h + MIN_GAP < b.y || b.y + b.h + MIN_GAP < a.y);
+      }
+
+      items.forEach(function(item, i) {
+        const rng = seededRand(i * 31 + 97);
+
+        // Seitenverhältnis aus echten Bilddimensionen ableiten
+        let aspect;
+        if (item.hasFeatureLottie) {
+          // Lottie-Items immer im Querformat (16:9 ± kleine Variation)
+          aspect = 16/9 + (rng() - 0.5) * 0.2;
+        } else if (item.thumbVideoUrl) {
+          // Video-Thumbnail → immer Querformat (16:9)
+          aspect = 16/9;
+        } else if (item.imageWidth && item.imageHeight) {
+          const rawRatio = item.imageWidth / item.imageHeight;
+          if (rawRatio > 1) {
+            // Querformat-Bild → Querformat behalten
+            aspect = rawRatio;
+          } else {
+            // Hochformat-Bild → Hochformat behalten, max. Quadrat (nie Querformat)
+            aspect = Math.min(rawRatio, 1);
+          }
+        } else {
+          // Kein Dimensionsinfo → zufällig, aber Querformat nur 30% Wahrscheinlichkeit
+          const r = rng();
+          aspect = r < 0.3 ? (4/3 + rng() * 0.5) : (2/3 + rng() * 0.3);
+        }
+
+        let w = Math.round(MIN_W + rng() * (MAX_W - MIN_W));
+        let h = Math.round(w / aspect);
+
+        // Mindestgröße: lange Kante ≥ 260px, kurze Kante ≥ 160px
+        const MIN_LONG_EDGE = 260, MIN_SHORT_EDGE = 160;
+        const longEdge = Math.max(w, h), shortEdge = Math.min(w, h);
+        const minScale = Math.max(MIN_LONG_EDGE / longEdge, MIN_SHORT_EDGE / shortEdge);
+        if (minScale > 1) { w = Math.round(w * minScale); h = Math.round(h * minScale); }
+
+        // Zufällige Position, Overlap-Retry — echter organischer Zufall
+        let x = MARGIN, y = MARGIN, tries = 0;
+        do {
+          const r2 = seededRand(i * 31 + 97 + tries * 17);
+          x = Math.round(MARGIN   + r2() * (CANVAS_W - w - 2 * MARGIN));
+          y = Math.round(MARGIN_Y + r2() * (CANVAS_H - h - 2 * MARGIN_Y));
+          tries++;
+        } while (tries < 600 && layouts.some(function(l) { return overlaps(l, { x, y, w, h }); }));
+
+        layouts.push({ x, y, w, h });
+      });
+
+      // Positionen normalisieren: linkestes/oberstes Item beginnt bei MARGIN
+      const xMin = Math.min.apply(null, layouts.map(function(l) { return l.x; }));
+      const yMin = Math.min.apply(null, layouts.map(function(l) { return l.y; }));
+      const xOff = MARGIN   - xMin;
+      const yOff = MARGIN_Y - yMin;
+      layouts.forEach(function(l) { l.x += xOff; l.y += yOff; });
+
+      return layouts;
+    }
+
+    /* ─── RENDER TILES ─── */
+    const canvasInner = document.getElementById('canvas-inner');
+
+    function renderTiles(items) {
+      canvasInner.innerHTML = '';
+      if (!items.length) return;
+      const layout = computeLayout(items);
+      // Canvas-Größe aus Layout berechnen
+      const maxX = Math.max.apply(null, layout.map(function(l) { return l.x + l.w + 400; }));
+      const maxY = Math.max.apply(null, layout.map(function(l) { return l.y + l.h + 300; }));
+      canvasInner.style.width  = Math.max(window.innerWidth, maxX) + 'px';
+      canvasInner.style.height = Math.max(window.innerHeight, maxY) + 'px';
+
+      items.forEach(function(item, i) {
+        const pos = layout[i];
+        const tile = document.createElement('div');
+        tile.className = 'explore-tile';
+        tile.dataset.categories = JSON.stringify(item.categories || []);
+        tile.dataset.id = item.id;
+        tile.style.cssText = 'width:' + pos.w + 'px;height:' + pos.h + 'px;left:' + pos.x + 'px;top:' + pos.y + 'px;overflow:hidden;position:absolute;';
+
+        // Parallax-Frame: inner div ist 20% größer für Overflow-Parallax
+        const inner = document.createElement('div');
+        inner.className = 'tile-img tile-parallax-inner';
+        inner.style.cssText = 'position:absolute;inset:-25%;';
+        if (item.imageUrl) {
+          inner.style.backgroundImage = 'url(' + item.imageUrl + ')';
+          inner.style.backgroundSize = 'cover';
+          inner.style.backgroundPosition = 'center';
+        }
+        tile.appendChild(inner);
+
+        // Kein Label bei Hover
+
+        canvasInner.appendChild(tile);
+      });
+
+      // Eingangsanimation: von links nach rechts
+      const sorted = items.map(function(it, i) { return { i: i, x: layout[i].x }; })
+        .sort(function(a, b) { return a.x - b.x; });
+      const tiles = canvasInner.querySelectorAll('.explore-tile');
+      sorted.forEach(function(s, order) {
+        gsap.fromTo(tiles[s.i],
+          { opacity: 0, scale: 0.86, y: 18 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.5, delay: 0.04 + order * 0.055, ease: 'power3.out' }
+        );
+      });
+
+      // Hover: Zoom vom Mittelpunkt (scale auf inner + Lottie/Video-Wraps)
+      tiles.forEach(function(tile) {
+        const inner = tile.querySelector('.tile-parallax-inner');
+        tile.addEventListener('mouseenter', function() {
+          const targets = [inner, ...tile.querySelectorAll('.tile-scale-wrap')].filter(Boolean);
+          gsap.to(targets, { scale: 1.08, duration: 0.5, ease: 'power2.out', transformOrigin: '50% 50%' });
+        });
+        tile.addEventListener('mouseleave', function() {
+          const targets = [inner, ...tile.querySelectorAll('.tile-scale-wrap')].filter(Boolean);
+          gsap.to(targets, { scale: 1, duration: 0.6, ease: 'power2.inOut', transformOrigin: '50% 50%' });
+        });
+      });
+
+      // Parallax: Offset relativ zur Viewport-Mitte – Bild zentriert wenn Tile im Screen-Zentrum
+      function applyParallax() {
+        const wrap = canvasInner.parentElement;
+        const vpCx = wrap.scrollLeft + wrap.clientWidth  / 2;
+        const vpCy = wrap.scrollTop  + wrap.clientHeight / 2;
+        canvasInner.querySelectorAll('.explore-tile').forEach(function(tile, i) {
+          const inner = tile.querySelector('.tile-parallax-inner');
+          if (!inner) return;
+          const depthX = (i % 3 === 0 ? 0.05 : i % 3 === 1 ? 0.04 : 0.06);
+          const depthY = (i % 2 === 0 ? 0.055 : 0.04);
+          const tileCx = tile.offsetLeft + tile.offsetWidth  / 2;
+          const tileCy = tile.offsetTop  + tile.offsetHeight / 2;
+          const dx = tileCx - vpCx;
+          const dy = tileCy - vpCy;
+          gsap.to(inner, {
+            x: -dx * depthX,
+            y: -dy * depthY,
+            duration: 0.15,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+      }
+      canvasInner.parentElement.addEventListener('scroll', applyParallax, { passive: true });
+      // Sofort beim Laden anwenden
+      requestAnimationFrame(applyParallax);
+
+      // Drift animation
+      canvasInner.querySelectorAll('.explore-tile').forEach(function(tile, i) {
+        gsap.to(tile, {
+          y: '+=' + (5 + (i % 4) * 3),
+          x: '+=' + (2 + (i % 3) * 2),
+          duration: 5 + i * 0.5,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+        });
+      });
+
+      // Re-bind hover cursor
+      canvasInner.querySelectorAll('.explore-tile').forEach(function(el) {
+        el.addEventListener('mouseenter', function() { cursorEl.classList.add('hover'); });
+        el.addEventListener('mouseleave', function() { cursorEl.classList.remove('hover'); });
+      });
+    }
+
+    renderTiles(EXPLORE_ITEMS);
+
+    /* ─── CURSOR ─── */
+    const cursorEl = document.getElementById('cursor');
+    let mouseX = -100, mouseY = -100, curX = -100, curY = -100;
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+    document.addEventListener('mouseleave', () => cursorEl.classList.add('hidden'));
+    document.addEventListener('mouseenter', () => cursorEl.classList.remove('hidden'));
+
+    (function animateCursor() {
+      curX += (mouseX - curX) * 0.14;
+      curY += (mouseY - curY) * 0.14;
+      cursorEl.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(animateCursor);
+    })();
+
+    function bindHoverCursor() {
+      document.querySelectorAll('a, button, .explore-tile, .explore-filter, .controls-theme-toggle').forEach(el => {
+        el.addEventListener('mouseenter', () => cursorEl.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursorEl.classList.remove('hover'));
+      });
+    }
+    bindHoverCursor();
+
+    /* ─── DRAG TO PAN ─── */
+    const canvasWrap = document.getElementById('canvas-wrap');
+    let isDragging = false, startX, startY, scrollL, scrollT, dragMoved = false;
+
+    canvasWrap.addEventListener('mousedown', e => {
+      isDragging = true;
+      dragMoved = false;
+      startX = e.pageX - canvasWrap.offsetLeft;
+      startY = e.pageY - canvasWrap.offsetTop;
+      scrollL = canvasWrap.scrollLeft;
+      scrollT = canvasWrap.scrollTop;
+      canvasWrap.classList.add('grabbing');
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      canvasWrap.classList.remove('grabbing');
+    });
+
+    canvasWrap.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const dx = e.pageX - canvasWrap.offsetLeft - startX;
+      const dy = e.pageY - canvasWrap.offsetTop - startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragMoved = true;
+      canvasWrap.scrollLeft = scrollL - dx;
+      canvasWrap.scrollTop  = scrollT - dy;
+    });
+
+    /* ─── TILE CLICK → OPEN POPUP ─── */
+    canvasWrap.addEventListener('click', e => {
+      if (dragMoved) return;
+      const tile = e.target.closest('.explore-tile');
+      if (!tile) return;
+      // Sanity items: verknüpftes Projekt hat Vorrang → Projekt-Overlay inline öffnen
+      if (tile.dataset.linkedProjectId) {
+        openProject(tile.dataset.linkedProjectId);
+        return;
+      }
+      if (tile.dataset.sanityId) { openSanityPopup(tile); return; }
+      const id = parseInt(tile.dataset.id);
+      const item = EXPLORE_ITEMS.find(i => i.id === id);
+      if (item) openExplorePopup(item);
+    });
+
+    /* ─── GSAP DRIFT — now handled inside renderTiles() ─── */
+
+    /* ─── FILTER SYSTEM — Multi-Select + ALL-Logik ─── */
+    let activeTags = []; // leer = ALL aktiv
+
+    function applyFilter() {
+      document.querySelectorAll('.explore-filter').forEach(function(b) {
+        const isAll = b.dataset.filter === 'all';
+        b.classList.toggle('active', isAll ? activeTags.length === 0 : activeTags.includes(b.dataset.filter));
+      });
+      document.querySelectorAll('.explore-tile').forEach(function(tile) {
+        const cats = JSON.parse(tile.dataset.categories || '[]');
+        const visible = activeTags.length === 0 || activeTags.some(t => cats.includes(t));
+        // GSAP Inline-Style direkt überschreiben — CSS-Klasse würde verlieren
+        gsap.to(tile, {
+          opacity: visible ? 1 : 0.06,
+          duration: 0.3,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+        tile.style.pointerEvents = visible ? '' : 'none';
+      });
+    }
+
+    document.querySelectorAll('.explore-filter').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const filter = btn.dataset.filter;
+        if (filter === 'all') {
+          activeTags = [];
+        } else {
+          const idx = activeTags.indexOf(filter);
+          if (idx >= 0) {
+            activeTags.splice(idx, 1);
+          } else {
+            activeTags.push(filter);
+          }
+        }
+        applyFilter();
+        if (window.innerWidth <= 768) {
+          document.getElementById('filter-bar').classList.remove('mobile-open');
+          document.getElementById('filter-toggle-btn').classList.toggle('active', activeTags.length > 0);
+        }
+      });
+    });
+
+    /* ─── MOBILE FILTER TOGGLE ─── */
+    const filterToggleBtn = document.getElementById('filter-toggle-btn');
+    const filterBar = document.getElementById('filter-bar');
+    filterToggleBtn.addEventListener('click', () => {
+      const isOpen = filterBar.classList.toggle('mobile-open');
+      filterToggleBtn.classList.toggle('active', isOpen);
+    });
+    // Close dropdown when clicking outside
+    document.addEventListener('click', e => {
+      if (window.innerWidth > 768) return;
+      if (!filterBar.contains(e.target) && e.target !== filterToggleBtn) {
+        filterBar.classList.remove('mobile-open');
+        filterToggleBtn.classList.remove('active');
+      }
+    });
+
+    /* ─── EXPLORE POPUP ─── */
+    const exploreOverlay  = document.getElementById('explore-overlay');
+    const eoPanel         = document.getElementById('eo-panel');
+    const eoBackdrop      = document.getElementById('eo-backdrop');
+    const eoClose         = document.getElementById('eo-close');
+    let eoFeatureLottieInst = null;
+    let tileLottieInsts = [];
+    // eo-close-compact removed (unified layout)
+
+    /* ─── Slideshow (Compact-Layout) — identisch zu work.html ─── */
+    const eoGalleryTrack = document.getElementById('eo-gallery-track');
+    let eoGalIndex = 0;
+
+    /* Baut die Explore-Gallery dynamisch auf.
+       Priorität: item.gallery (Sanity-URLs) → item.images (lokale Pfade) */
+    function buildEoGallery(item) {
+      // Sanity-gallery: Array aus { url, width, height } Objekten
+      const sanityGallery = (item.gallery || []).filter(g => g && g.url);
+      // Lokale Pfade als Fallback (item.images aus EXPLORE_ITEMS)
+      const localImages   = item.images || [];
+
+      // Normalisierte Liste: immer { src, width, height }
+      const images = sanityGallery.length
+        ? sanityGallery.map(g => ({ src: g.url, width: g.width, height: g.height }))
+        : localImages.map(src => ({ src, width: null, height: null }));
+      const dotsContainer = document.querySelector('.eo-gallery-dots');
+      const galleryH     = eoGalleryTrack.parentElement.offsetHeight || 480;
+
+      // Track + Dots leeren
+      eoGalleryTrack.innerHTML = '';
+      dotsContainer.innerHTML  = '';
+
+      // Fallback: ein Platzhalter-Slide wenn keine Bilder
+      if (!images.length) {
+        const slide = document.createElement('div');
+        slide.className = 'eo-gallery-slide eo-gallery-slide--placeholder';
+        eoGalleryTrack.appendChild(slide);
+        const dot = document.createElement('span');
+        dot.className   = 'eo-dot active';
+        dot.dataset.slide = '0';
+        dot.addEventListener('click', () => eoGalGoTo(0));
+        dotsContainer.appendChild(dot);
+        requestAnimationFrame(() => eoGalGoTo(0));
+        return;
+      }
+
+      let loadedCount = 0;
+
+      images.forEach((imgEntry, i) => {
+        // Slide erstellen
+        const slide = document.createElement('div');
+        slide.className = 'eo-gallery-slide';
+
+        // Falls Sanity bereits Dimensionen mitliefert → Breite sofort setzen (kein Layout-Sprung)
+        if (imgEntry.width && imgEntry.height) {
+          const ratio = imgEntry.width / imgEntry.height;
+          slide.style.width = Math.round(galleryH * ratio) + 'px';
+        } else {
+          // Vorläufige Breite (16:9) bis das Bild geladen ist
+          slide.style.width = Math.round(galleryH * 16 / 9) + 'px';
+        }
+        eoGalleryTrack.appendChild(slide);
+
+        // Dot erstellen
+        const dot = document.createElement('span');
+        dot.className     = 'eo-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.slide = String(i);
+        dot.addEventListener('click', () => eoGalGoTo(parseInt(dot.dataset.slide)));
+        dotsContainer.appendChild(dot);
+
+        // Bild laden — Slide-Breite aus natürlichem Seitenverhältnis verfeinern
+        const img = new Image();
+        img.alt = `${item.title} — Bild ${i + 1}`;
+
+        const finalize = () => {
+          const ratio = img.naturalWidth && img.naturalHeight
+            ? img.naturalWidth / img.naturalHeight
+            : (imgEntry.width && imgEntry.height ? imgEntry.width / imgEntry.height : 16 / 9);
+          slide.style.width = Math.round(galleryH * ratio) + 'px';
+          loadedCount++;
+          // Erst wenn alle Bilder ihre Breite kennen: Position berechnen
+          if (loadedCount === images.length) requestAnimationFrame(() => eoGalGoTo(0));
+        };
+
+        img.onload  = finalize;
+        img.onerror = finalize; // auch bei Fehler positionieren
+        img.src     = imgEntry.src;
+        slide.appendChild(img);
+      });
+    }
+
+    function eoGalGoTo(n) {
+      const slides = [...eoGalleryTrack.querySelectorAll('.eo-gallery-slide')];
+      if (!slides.length) return;
+      eoGalIndex = Math.max(0, Math.min(n, slides.length - 1));
+
+      const viewport = eoGalleryTrack.parentElement;
+      const viewW    = viewport.offsetWidth;
+      const gap      = 16;
+
+      // Kumulierten Offset bis zum Ziel-Slide berechnen
+      let cumulativeX = 0;
+      for (let i = 0; i < eoGalIndex; i++) {
+        cumulativeX += slides[i].offsetWidth + gap;
+      }
+
+      // Ziel-Slide horizontal zentrieren
+      const targetW    = slides[eoGalIndex].offsetWidth;
+      const centerOffset = (viewW - targetW) / 2;
+
+      eoGalleryTrack.style.transform = `translateX(${centerOffset - cumulativeX}px)`;
+
+      document.querySelectorAll('.eo-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === eoGalIndex)
+      );
+    }
+
+    /* Cursor-Morphing */
+    function setEoCursorArrow(dir) {
+      cursorEl.classList.remove('hover', 'arrow-prev', 'arrow-next');
+      cursorEl.classList.add(dir === 'prev' ? 'arrow-prev' : 'arrow-next');
+    }
+    function resetEoCursorArrow() { cursorEl.classList.remove('arrow-prev', 'arrow-next'); }
+
+    /* Positions-basierte Cursor & Klick-Logik:
+       Prüft Mouse-X gegen die tatsächliche Breite des aktiven Slides —
+       nicht gegen fixe Pixel-Zonen. Funktioniert auch bei schmalen Hochformaten. */
+    const eoGalleryViewport = eoGalleryTrack.parentElement;
+
+    function getActiveSlideRect() {
+      const slides = [...eoGalleryTrack.querySelectorAll('.eo-gallery-slide')];
+      return slides[eoGalIndex]?.getBoundingClientRect() ?? null;
+    }
+
+    eoGalleryViewport.addEventListener('mousemove', e => {
+      const rect = getActiveSlideRect();
+      if (!rect) return;
+      if (e.clientX < rect.left) {
+        setEoCursorArrow('prev');
+        cursorEl.classList.remove('zoom');
+      } else if (e.clientX > rect.right) {
+        setEoCursorArrow('next');
+        cursorEl.classList.remove('zoom');
+      } else {
+        resetEoCursorArrow();
+        cursorEl.classList.add('zoom');
+      }
+    });
+
+    eoGalleryViewport.addEventListener('mouseleave', () => {
+      resetEoCursorArrow();
+      cursorEl.classList.remove('zoom');
+    });
+
+    /* ─── Lightbox ─── */
+    const eoLightbox      = document.getElementById('eo-lightbox');
+    const eoLightboxImg   = document.getElementById('eo-lightbox-img');
+    const eoLightboxClose = document.getElementById('eo-lightbox-close');
+    let lightboxIndex = 0;
+
+    function getLightboxSlides() {
+      return [...eoGalleryTrack.querySelectorAll('.eo-gallery-slide img')];
+    }
+
+    function lightboxShow(index) {
+      const imgs = getLightboxSlides();
+      if (!imgs.length) return;
+      lightboxIndex = Math.max(0, Math.min(index, imgs.length - 1));
+      const img = imgs[lightboxIndex];
+      eoLightboxImg.src = img.src;
+      eoLightboxImg.alt = img.alt || '';
+    }
+
+    function openLightbox(startIndex) {
+      lightboxShow(startIndex);
+      eoLightbox.classList.add('open');
+      cursorEl.classList.add('hidden');
+    }
+
+    function closeLightbox() {
+      eoLightbox.classList.remove('open');
+      cursorEl.classList.remove('hidden');
+    }
+
+    eoLightboxClose.addEventListener('click', closeLightbox);
+    eoLightbox.addEventListener('click', e => {
+      if (e.target === eoLightbox || e.target === eoLightboxImg) closeLightbox();
+    });
+
+    /* Klick auf Viewport: Nachbar-Slide → navigieren, aktiver Slide → Lightbox */
+    eoGalleryViewport.addEventListener('click', e => {
+      const rect = getActiveSlideRect();
+      if (!rect) return;
+
+      if (e.clientX < rect.left) {
+        eoGalGoTo(eoGalIndex - 1);
+      } else if (e.clientX > rect.right) {
+        eoGalGoTo(eoGalIndex + 1);
+      } else {
+        // Klick auf aktiven Slide → Lightbox öffnen, beginnend beim aktuellen Slide
+        const slides = [...eoGalleryTrack.querySelectorAll('.eo-gallery-slide')];
+        const activeSlide = slides[eoGalIndex];
+        if (activeSlide?.querySelector('img')) openLightbox(eoGalIndex);
+      }
+    });
+
+    /* Dots werden dynamisch in buildEoGallery() gebunden */
+
+    /* ─── Popup öffnen ─── */
+    function openExplorePopup(item) {
+      // Unified layout: always feature + body + gallery
+      document.getElementById('eo-title').textContent = item.title;
+      document.getElementById('eo-year').textContent  = item.year;
+      document.getElementById('eo-desc').innerHTML    = toParaHtml(item.desc || '');
+
+      const agencyCol = document.getElementById('eo-agency-col');
+      if (item.agency) {
+        agencyCol.style.display = '';
+        document.getElementById('eo-agency').textContent = item.agency;
+      } else {
+        agencyCol.style.display = 'none';
+      }
+
+      document.getElementById('eo-tags').innerHTML =
+        (item.tags || []).map(t => `<span class="eo-tag">${t}</span>`).join('');
+
+      // Gallery dynamisch aus item.images aufbauen
+      eoGalIndex = 0;
+      buildEoGallery(item);
+
+      eoPanel.scrollTop = 0;
+      exploreOverlay.classList.add('open');
+      document.body.classList.add('popup-open');
+      requestAnimationFrame(() => setupEoDescCollapse());
+    }
+
+    function closeExplorePopup() {
+      exploreOverlay.classList.remove('open');
+      document.body.classList.remove('popup-open');
+      document.getElementById('eo-desc-wrap').classList.remove('is-collapsed');
+      document.getElementById('eo-desc-toggle').style.display = 'none';
+      resetEoCursorArrow();
+      cursorEl.classList.remove('zoom');
+      if (eoFeatureLottieInst) { try { eoFeatureLottieInst.destroy(); } catch(e) {} eoFeatureLottieInst = null; }
+      const eoFeature = document.getElementById('eo-feature');
+      eoFeature.style.aspectRatio = '21 / 9';
+    }
+
+    eoClose.addEventListener('click', closeExplorePopup);
+    eoBackdrop.addEventListener('click', closeExplorePopup);
+
+    /* ─── NAVIGATION — FULLSCREEN OVERLAY ─── */
+    const menuOverlay = document.getElementById('menu-overlay');
+    const menuItems = menuOverlay.querySelectorAll('.menu-item a');
+    const menuFooter = menuOverlay.querySelector('.menu-footer');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+    const navMenuBtn = document.getElementById('nav-menu-btn');
+
+    let menuOpen = false;
+
+    function openMenu() {
+      menuOpen = true;
+      menuOverlay.classList.add('open');
+      navMenuBtn.textContent = '';
+
+      gsap.to(menuOverlay, { clipPath: 'inset(0 0 0% 0)', duration: 0.8, ease: 'power4.inOut' });
+      gsap.to(menuItems, {
+        y: '0%', duration: 0.9, stagger: 0.06, ease: 'power4.out', delay: 0.3
+      });
+      gsap.to(menuFooter, {
+        opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.6
+      });
+      menuCloseBtn.style.pointerEvents = 'auto';
+      gsap.to(menuCloseBtn, {
+        opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', delay: 0.5
+      });
+    }
+
+    function closeMenu() {
+      menuOpen = false;
+      navMenuBtn.textContent = '[ Menu ]';
+
+      gsap.to(menuItems, { y: '100%', duration: 0.5, stagger: 0.04, ease: 'power3.in' });
+      gsap.to(menuFooter, { opacity: 0, y: 20, duration: 0.3 });
+      gsap.to(menuCloseBtn, { opacity: 0, y: -8, duration: 0.3, onComplete: () => { menuCloseBtn.style.pointerEvents = 'none'; } });
+      gsap.to(menuOverlay, {
+        clipPath: 'inset(0 0 100% 0)', duration: 0.7, ease: 'power4.inOut', delay: 0.2,
+        onComplete: () => menuOverlay.classList.remove('open')
+      });
+    }
+
+    navMenuBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+    menuCloseBtn.addEventListener('click', closeMenu);
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    /* ─── ⌘K COMMAND PALETTE ─── */
+    const cmdOverlay = document.getElementById('cmd-overlay');
+    const cmdInput = document.getElementById('cmd-input');
+    const getCR = () => document.querySelectorAll('#cmd-results .cmd-result');
+    let selectedIdx = 0;
+
+    function openCmdPalette() {
+      cmdOverlay.classList.add('open');
+      cmdInput.value = '';
+      cmdInput.focus();
+      resetCmdResults();
+    }
+
+    function closeCmdPalette() {
+      cmdOverlay.classList.remove('open');
+    }
+
+    function resetCmdResults() {
+      getCR().forEach((r, i) => {
+        r.classList.toggle('active', i === 0);
+        r.style.display = '';
+      });
+      selectedIdx = 0;
+    }
+
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        cmdOverlay.classList.contains('open') ? closeCmdPalette() : openCmdPalette();
+      }
+      if (e.key === 'Escape') {
+        if (eoLightbox.classList.contains('open')) { closeLightbox(); return; }
+        closeCmdPalette();
+        closeExplorePopup();
+        if (menuOpen) closeMenu();
+      }
+
+      // Pfeiltasten in der Lightbox
+      if (eoLightbox.classList.contains('open')) {
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); lightboxShow(lightboxIndex - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); lightboxShow(lightboxIndex + 1); }
+      }
+      if (cmdOverlay.classList.contains('open')) {
+        const visible = [...getCR()].filter(r => r.style.display !== 'none');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          visible[selectedIdx]?.classList.remove('active');
+          selectedIdx = Math.min(selectedIdx + 1, visible.length - 1);
+          visible[selectedIdx]?.classList.add('active');
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          visible[selectedIdx]?.classList.remove('active');
+          selectedIdx = Math.max(selectedIdx - 1, 0);
+          visible[selectedIdx]?.classList.add('active');
+        }
+        if (e.key === 'Enter') {
+          const active = visible[selectedIdx];
+          if (active) {
+            window.location.href = active.dataset.href;
+            closeCmdPalette();
+          }
+        }
+      }
+    });
+
+    cmdOverlay.addEventListener('click', e => {
+      if (e.target === cmdOverlay) closeCmdPalette();
+    });
+
+    cmdInput.addEventListener('input', () => {
+      const q = cmdInput.value.toLowerCase();
+      selectedIdx = 0;
+      getCR().forEach(r => {
+        const label = r.querySelector('.cmd-result-label').textContent.toLowerCase();
+        const match = !q || label.includes(q);
+        r.style.display = match ? '' : 'none';
+        r.classList.remove('active');
+      });
+      const firstVisible = [...getCR()].find(r => r.style.display !== 'none');
+      if (firstVisible) firstVisible.classList.add('active');
+    });
+
+    document.getElementById('nav-cmd').addEventListener('click', openCmdPalette);
+
+    /* ─── LANGUAGE SWITCH ─── */
+    function setLang(lang) {
+      document.querySelectorAll('[data-de][data-en]').forEach(el => {
+        const val = el.dataset[lang];
+        if (!val) return;
+        el.innerHTML = val.includes('<') ? val : '';
+        if (!val.includes('<')) el.textContent = val;
+      });
+      document.getElementById('menu-btn-de').classList.toggle('active', lang === 'de');
+      document.getElementById('menu-btn-en').classList.toggle('active', lang === 'en');
+    }
+
+    /* ─── THEME SWITCH (persisted via sessionStorage — resets on new tab/session) ─── */
+    let currentTheme = 'dark'; try { currentTheme = sessionStorage.getItem('theme') || 'dark'; } catch(e) {}
+    function setTheme(theme) {
+      currentTheme = theme;
+      try { sessionStorage.setItem('theme', theme); } catch(e) {}
+      document.documentElement.classList.toggle('light', theme === 'light');
+    }
+    setTheme(currentTheme); // apply on load
+    document.getElementById('controls-theme-toggle').addEventListener('click', () => {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ─── SANITY EXPLORE ─── */
+    const SANITY_CAT_MAP = {
+      'photography': 'photo',
+      'logo':        'identity',
+      'editorial':   'print',
+      'web':         'web',
+      'motion':      'motion',
+      'identity':    'identity',
+      'logo':        'logo',
+      'logo':        'logo',
+    };
+
+    // Compute tile w/h to match image aspect ratio
+    function computeTileDims(imgW, imgH) {
+      if (!imgW || !imgH) return null;
+      const ratio = imgW / imgH;
+      let h = ratio >= 1 ? 280 : 400;
+      let w = Math.round(h * ratio);
+      // clamp
+      if (w > 520) { w = 520; h = Math.round(w / ratio); }
+      if (w < 180) { w = 180; h = Math.round(w / ratio); }
+      return { w, h };
+    }
+
+    async function loadSanityExplore() {
+      try {
+        // Tile-Lottie-Instanzen aus vorherigem Render aufräumen
+        tileLottieInsts.forEach(inst => { try { inst.destroy(); } catch(e) {} });
+        tileLottieInsts = [];
+
+        const sanityItems = await Sanity.getExploreItems();
+        if (!sanityItems || !sanityItems.length) return;
+
+        // Sanity-Items in das renderTiles()-Format konvertieren
+        const normalizedItems = sanityItems
+          .filter(item => item.imageRef || item.featureLottie?.asset?.url || item.thumbnailLottie?.asset?.url || item.thumbnailVideo?.asset?.url)
+          .map(item => ({
+            id:               item._id,
+            categories:       (Array.isArray(item.category) ? item.category : (item.category ? [item.category] : [])).map(c => SANITY_CAT_MAP[c] || c).filter(Boolean),
+            imageUrl:         item.imageRef ? Sanity.imageUrl(item.imageRef, { width: 1400, quality: 90 }) : null,
+            title:            item.title       || '',
+            year:             item.year        || '',
+            imageWidth:       item.imageWidth  || null,
+            imageHeight:      item.imageHeight || null,
+            hasFeatureLottie: !!(item.featureLottie?.asset?.url || item.thumbnailLottie?.asset?.url),
+            thumbLottieUrl:   item.thumbnailLottie?.asset?.url || null,
+            thumbLottieBg:    item.thumbnailLottieBg || null,
+            thumbVideoUrl:    item.thumbnailVideo?.asset?.url || null,
+            // Sanity-Rohdaten für Popup mitführen
+            _sanity: item
+          }));
+
+        if (!normalizedItems.length) return;
+
+        // Layout über renderTiles() — random position + size
+        renderTiles(normalizedItems);
+
+        // Sanity-Metadaten nachträglich an die fertigen Tiles hängen
+        normalizedItems.forEach(item => {
+          const tile = canvasInner.querySelector(`.explore-tile[data-id="${item.id}"]`);
+          if (!tile) return;
+          const s = item._sanity;
+          const imgUrl = item.imageUrl;
+          tile.dataset.sanityId           = s._id;
+          tile.dataset.sanityTitle        = s.title       || '';
+          tile.dataset.sanityDesc         = s.description || '';
+          tile.dataset.sanityYear         = s.year        || '';
+          tile.dataset.sanityAgency       = s.agency      || '';
+          tile.dataset.sanityTags         = JSON.stringify(s.tags    || []);
+          tile.dataset.sanityImageUrl     = imgUrl || '';
+          // URL aus ref konstruieren (image.asset->url liefert null in GROQ)
+          const galleryWithUrls = (s.gallery || [])
+            .filter(g => g?.ref)
+            .map(g => ({
+              url: Sanity.imageUrl(g.ref, { width: 2400, quality: 90 }),
+              width: g.width,
+              height: g.height,
+            }));
+          tile.dataset.sanityGallery = JSON.stringify(galleryWithUrls);
+          tile.dataset.sanityLottieUrl    = s.featureLottie?.asset?.url || '';
+          tile.dataset.sanityLottieBg     = s.featureLottieBg || '';
+          tile.dataset.sanityThumbVideoUrl = item.thumbVideoUrl || '';
+          tile.dataset.linkedProjectId    = s.linkedProjectId || '';
+          // Thumbnail-Overrides (Lottie / Video)
+          if (item.thumbLottieUrl) {
+            const inner = tile.querySelector('.tile-parallax-inner');
+            if (inner) inner.style.backgroundImage = '';
+            // Lottie direkt auf die Tile (nicht den Parallax-Inner) hängen,
+            // damit es unabhängig vom inset:-25% perfekt zentriert ist.
+            if (item.thumbLottieBg) tile.style.background = item.thumbLottieBg;
+            const wrap = document.createElement('div');
+            wrap.className = 'tile-scale-wrap';
+            wrap.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:hidden;z-index:2;';
+            tile.appendChild(wrap);
+            const inst = lottie.loadAnimation({ container: wrap, renderer: 'svg', loop: true, autoplay: true, path: item.thumbLottieUrl });
+            inst.addEventListener('DOMLoaded', () => {
+              const svg = wrap.querySelector('svg');
+              if (svg) {
+                svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                svg.style.cssText = 'width:100%!important;height:100%!important;display:block;';
+              }
+            });
+            tileLottieInsts.push(inst);
+          } else if (item.thumbVideoUrl) {
+            const inner = tile.querySelector('.tile-parallax-inner');
+            if (inner) {
+              inner.classList.add('tile-scale-wrap');
+              inner.style.backgroundImage = '';
+              const vid = document.createElement('video');
+              vid.src = item.thumbVideoUrl;
+              vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+              vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
+              inner.appendChild(vid);
+            }
+          }
+        });
+
+        bindHoverCursor();
+      } catch (err) {
+        console.warn('Sanity explore failed:', err.message);
+      }
+    }
+
+    // Open popup for a Sanity-backed tile
+    function openSanityPopup(tile) {
+      document.getElementById('eo-title').textContent = tile.dataset.sanityTitle || '—';
+
+      const year = tile.dataset.sanityYear;
+      document.getElementById('eo-year').textContent = year || '—';
+
+      const agency = tile.dataset.sanityAgency;
+      const agencyCol = document.getElementById('eo-agency-col');
+      if (agency) {
+        agencyCol.style.display = '';
+        document.getElementById('eo-agency').textContent = agency;
+      } else {
+        agencyCol.style.display = 'none';
+      }
+
+      document.getElementById('eo-desc').innerHTML = toParaHtml(tile.dataset.sanityDesc || '');
+
+      const tags = JSON.parse(tile.dataset.sanityTags || '[]');
+      const cats = JSON.parse(tile.dataset.categories || '[]');
+      const displayTags = tags.length > 0 ? tags : cats;
+      document.getElementById('eo-tags').innerHTML =
+        displayTags.map(t => `<span class="eo-tag">${t}</span>`).join('');
+
+      // Feature: vorherige Inhalte und Lottie-Instanz bereinigen
+      if (eoFeatureLottieInst) { try { eoFeatureLottieInst.destroy(); } catch(e) {} eoFeatureLottieInst = null; }
+      const eoFeature = document.getElementById('eo-feature');
+      eoFeature.querySelectorAll('img, video, .eo-lottie-wrap').forEach(el => el.remove());
+      eoFeature.querySelector('.eo-feature-placeholder')?.remove();
+      eoFeature.style.background = '';
+      eoFeature.style.aspectRatio = '21 / 9'; // Popup immer breitformatig
+
+      const lottieUrl = tile.dataset.sanityLottieUrl;
+      if (lottieUrl) {
+        if (tile.dataset.sanityLottieBg) eoFeature.style.background = tile.dataset.sanityLottieBg;
+        // Lottie: Aspect-Ratio aus thumbnailLottieAspect wenn vorhanden, sonst breitformatig
+        const lottieAspect = tile.dataset.sanityLottieAspect;
+        eoFeature.style.aspectRatio = lottieAspect || '21 / 9';
+        const wrap = document.createElement('div');
+        wrap.className = 'eo-lottie-wrap';
+        wrap.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:hidden;';
+        eoFeature.insertBefore(wrap, eoFeature.firstChild);
+        eoFeatureLottieInst = lottie.loadAnimation({
+          container: wrap,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: lottieUrl,
+        });
+        eoFeatureLottieInst.addEventListener('DOMLoaded', () => {
+          const svg = wrap.querySelector('svg');
+          if (svg) {
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+            svg.style.cssText = 'width:100%!important;height:100%!important;';
+          }
+        });
+      } else if (tile.dataset.sanityImageUrl) {
+        const fImg = document.createElement('img');
+        fImg.alt = tile.dataset.sanityTitle || '';
+        fImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;';
+        fImg.src = tile.dataset.sanityImageUrl;
+        eoFeature.insertBefore(fImg, eoFeature.firstChild);
+      } else if (tile.dataset.sanityThumbVideoUrl) {
+        const fVid = document.createElement('video');
+        fVid.src = tile.dataset.sanityThumbVideoUrl;
+        fVid.autoplay = true;
+        fVid.loop = true;
+        fVid.muted = true;
+        fVid.playsInline = true;
+        fVid.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;';
+        eoFeature.insertBefore(fVid, eoFeature.firstChild);
+      }
+
+      // Gallery: sanityGallery-Array wenn vorhanden, sonst Cover-Bild als Einzelslide
+      const rawGallery = JSON.parse(tile.dataset.sanityGallery || '[]');
+      const galleryForBuild = rawGallery.length
+        ? rawGallery
+        : (tile.dataset.sanityImageUrl
+            ? [{ url: tile.dataset.sanityImageUrl, width: null, height: null }]
+            : []);
+
+      eoGalIndex = 0;
+      buildEoGallery({ title: tile.dataset.sanityTitle || '', gallery: galleryForBuild, images: [] });
+      eoPanel.scrollTop = 0;
+      exploreOverlay.classList.add('open');
+      document.body.classList.add('popup-open');
+      // Nach dem Öffnen Gallery neu positionieren — offsetWidth ist erst
+      // korrekt wenn das Overlay sichtbar ist (nicht mehr display:none).
+      requestAnimationFrame(() => requestAnimationFrame(() => { eoGalGoTo(0); setupEoDescCollapse(); }));
+    }
+
+    loadSanityExplore().then(() => {
+      // Nach dem Render: Canvas ganz links starten
+      canvasWrap.scrollLeft = 0;
+      canvasWrap.scrollTop  = 0;
+
+      // Deep-Link: ?item={sanityId} → Tile suchen und Popup öffnen
+      const itemParam = new URLSearchParams(window.location.search).get('item');
+      if (itemParam) {
+        const tile = canvasInner.querySelector(`.explore-tile[data-sanity-id="${itemParam}"], .explore-tile[data-id="${itemParam}"]`);
+        if (tile) {
+          // Tile in Viewport-Mitte scrollen
+          const vpW = canvasWrap.clientWidth;
+          const vpH = canvasWrap.clientHeight;
+          canvasWrap.scrollLeft = Math.max(0, tile.offsetLeft - vpW / 2 + tile.offsetWidth / 2);
+          canvasWrap.scrollTop  = Math.max(0, tile.offsetTop  - vpH / 2 + tile.offsetHeight / 2);
+          // Kurz warten, dann Popup öffnen
+          setTimeout(() => tile.click(), 350);
+        }
+      }
+    });
+
+    /* ══════════════════════════════════════════
+       PROJEKT-OVERLAY (portiert von work.html)
+    ══════════════════════════════════════════ */
+    const projectOverlay  = document.getElementById('project-overlay');
+    const poBackdrop      = document.getElementById('po-backdrop');
+    const poClose         = document.getElementById('po-close');
+    const poGalleryTrack  = document.getElementById('po-gallery-track');
+    const poLightbox      = document.getElementById('po-lightbox');
+    const poLightboxImg   = document.getElementById('po-lightbox-img');
+    const poLightboxClose = document.getElementById('po-lightbox-close');
+
+    let galIndex = 0;
+    let galSlideEls = [];
+    let galLottieInsts = [];
+    let featLottieInst = null;
+    let isProjectOpen = false;
+    let poLightboxIndex = 0;
+
+    const poLightboxImgEl = document.createElement('img');
+    poLightboxImgEl.style.cssText = 'max-width:92vw;max-height:90vh;width:auto;height:auto;display:block;object-fit:contain;';
+    poLightboxImg.appendChild(poLightboxImgEl);
+
+    function parseAR(value) {
+      if (!value) return 16 / 9;
+      if (typeof value === 'number') return value;
+      const parts = String(value).split(':').map(Number);
+      return parts.length === 2 && parts[1] ? parts[0] / parts[1] : 16 / 9;
+    }
+
+    function slideWidth(ar) {
+      return Math.round(poGalleryTrack.parentElement.offsetHeight * ar);
+    }
+
+    function updateGalCursors() {
+      galSlideEls.forEach((el, i) => {
+        el.onclick = null; el.onmouseenter = null; el.onmouseleave = null;
+        if (i === galIndex - 1) {
+          el.onclick = () => goToGalSlide(galIndex - 1);
+          el.onmouseenter = () => { cursorEl.classList.remove('hover','arrow-next'); cursorEl.classList.add('arrow-prev'); };
+          el.onmouseleave = () => cursorEl.classList.remove('arrow-prev','arrow-next');
+        } else if (i === galIndex + 1) {
+          el.onclick = () => goToGalSlide(galIndex + 1);
+          el.onmouseenter = () => { cursorEl.classList.remove('hover','arrow-prev'); cursorEl.classList.add('arrow-next'); };
+          el.onmouseleave = () => cursorEl.classList.remove('arrow-prev','arrow-next');
+        } else if (i === galIndex) {
+          el.onclick = () => poOpenLightbox(galIndex);
+          el.onmouseenter = () => { cursorEl.classList.remove('hover','arrow-prev','arrow-next'); cursorEl.classList.add('zoom'); };
+          el.onmouseleave = () => cursorEl.classList.remove('arrow-prev','arrow-next','zoom');
+        }
+      });
+    }
+
+    function goToGalSlide(n) {
+      if (!galSlideEls.length) return;
+      galIndex = Math.max(0, Math.min(n, galSlideEls.length - 1));
+      const viewport = poGalleryTrack.parentElement;
+      const viewW = viewport.offsetWidth;
+      const gap = 16;
+      let offsetToSlide = 0;
+      for (let i = 0; i < galIndex; i++) offsetToSlide += galSlideEls[i].offsetWidth + gap;
+      const slideW = galSlideEls[galIndex].offsetWidth;
+      poGalleryTrack.style.transform = `translateX(${(viewW - slideW) / 2 - offsetToSlide}px)`;
+      document.querySelectorAll('.po-dot').forEach((dot, i) => dot.classList.toggle('active', i === galIndex));
+      updateGalCursors();
+    }
+
+    function buildGallery(slides) {
+      galLottieInsts.forEach(inst => { try { inst.destroy(); } catch(e) {} });
+      galLottieInsts = []; galSlideEls = []; galIndex = 0;
+      poGalleryTrack.innerHTML = '';
+      poGalleryTrack.style.transform = '';
+      const dotsEl = document.querySelector('.po-gallery-dots');
+      dotsEl.innerHTML = '';
+      if (!slides || !slides.length) {
+        const el = document.createElement('div');
+        el.className = 'po-gallery-slide';
+        el.style.width = slideWidth(16/9) + 'px';
+        poGalleryTrack.appendChild(el); galSlideEls.push(el);
+        dotsEl.appendChild(Object.assign(document.createElement('span'), { className: 'po-dot active' }));
+        return;
+      }
+      slides.forEach((slide, i) => {
+        const el = document.createElement('div');
+        el.className = 'po-gallery-slide';
+        let ar = 16/9;
+        if (slide._type === 'slideImage') {
+          const dims = slide.image?.asset?.metadata?.dimensions;
+          if (dims) ar = dims.aspectRatio || (dims.width / dims.height);
+          el.style.width = slideWidth(ar) + 'px';
+          if (slide.image?.asset?.url) {
+            const img = document.createElement('img');
+            img.src = slide.image.asset.url + '?w=1800&q=85&fit=max';
+            img.alt = slide.caption || ''; img.loading = 'lazy';
+            el.appendChild(img);
+          }
+        } else if (slide._type === 'slideVideo') {
+          ar = parseAR(slide.aspectRatio);
+          el.style.width = slideWidth(ar) + 'px';
+          if (slide.video?.asset?.url) {
+            const video = document.createElement('video');
+            video.src = slide.video.asset.url;
+            video.autoplay = slide.autoplay !== false;
+            video.loop = slide.loop !== false;
+            video.muted = slide.muted !== false;
+            video.playsInline = true;
+            video.preload = 'metadata';
+            el.appendChild(video);
+          }
+        } else if (slide._type === 'slideLottie') {
+          ar = parseAR(slide.aspectRatio);
+          el.style.width = slideWidth(ar) + 'px';
+          if (slide.background) el.style.background = slide.background;
+          if (slide.lottieFile?.asset?.url) {
+            const wrap = document.createElement('div'); wrap.className = 'lottie-wrap'; el.appendChild(wrap);
+            galLottieInsts.push(lottie.loadAnimation({ container: wrap, renderer: 'svg', loop: slide.loop !== false, autoplay: true, path: slide.lottieFile.asset.url }));
+          }
+        }
+        poGalleryTrack.appendChild(el); galSlideEls.push(el);
+        const dot = document.createElement('span');
+        dot.className = 'po-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToGalSlide(i));
+
+    /* ── Touch swipe for gallery ── */
+    ;(function() {
+      const vp = poGalleryTrack.parentElement;
+      let _tx = 0;
+      vp.addEventListener('touchstart', e => { _tx = e.touches[0].clientX; }, { passive: true });
+      vp.addEventListener('touchend',   e => {
+        const dx = e.changedTouches[0].clientX - _tx;
+        if (Math.abs(dx) > 40) goToGalSlide(galIndex + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    })();
+
+        dotsEl.appendChild(dot);
+      });
+    }
+
+    function renderFeature(project) {
+      if (featLottieInst) { try { featLottieInst.destroy(); } catch(e) {} featLottieInst = null; }
+      const feat = document.getElementById('po-feature');
+      feat.querySelectorAll('img, video, .lottie-wrap').forEach(el => el.remove());
+      feat.querySelector('.po-feature-placeholder').style.display = '';
+      feat.style.background = project.thumbnailBg || project.colors?.[0] || 'var(--surface)';
+      if (project.thumbnailLottie?.asset?.url) {
+        feat.querySelector('.po-feature-placeholder').style.display = 'none';
+        const wrap = document.createElement('div'); wrap.className = 'lottie-wrap'; feat.appendChild(wrap);
+        featLottieInst = lottie.loadAnimation({ container: wrap, renderer: 'svg', loop: true, autoplay: true, path: project.thumbnailLottie.asset.url });
+        featLottieInst.addEventListener('DOMLoaded', () => { const svg = wrap.querySelector('svg'); if (svg) svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); });
+      } else if (project.thumbnail?.asset?.url) {
+        feat.querySelector('.po-feature-placeholder').style.display = 'none';
+        const img = document.createElement('img');
+        img.src = project.thumbnail.asset.url + '?w=2400&q=85&fit=max';
+        feat.appendChild(img);
+      } else if (project.thumbnailVideo?.asset?.url) {
+        feat.querySelector('.po-feature-placeholder').style.display = 'none';
+        const vid = document.createElement('video');
+        vid.src = project.thumbnailVideo.asset.url;
+        vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+        vid.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+        feat.appendChild(vid);
+      }
+    }
+
+    /* ── DESCRIPTION COLLAPSE (Explore-Overlay) ── */
+    function setupEoDescCollapse() {
+      const wrap   = document.getElementById('eo-desc-wrap');
+      const desc   = document.getElementById('eo-desc');
+      const toggle = document.getElementById('eo-desc-toggle');
+      if (!wrap || !desc || !toggle) return;
+      wrap.classList.remove('is-collapsed');
+      toggle.style.display = 'none';
+      const collapseH = parseFloat(getComputedStyle(document.documentElement).fontSize) * 10;
+      if (desc.scrollHeight > collapseH + 8) {
+        wrap.classList.add('is-collapsed');
+        toggle.style.display = 'block';
+        const lang = document.documentElement.lang || 'en';
+        toggle.textContent = lang === 'de' ? 'Mehr lesen' : 'Read more';
+      }
+    }
+
+    document.getElementById('eo-desc-toggle').addEventListener('click', function () {
+      const wrap = document.getElementById('eo-desc-wrap');
+      const isCollapsed = wrap.classList.contains('is-collapsed');
+      wrap.classList.toggle('is-collapsed');
+      const lang = document.documentElement.lang || 'en';
+      this.textContent = isCollapsed
+        ? (lang === 'de' ? 'Weniger' : 'Less')
+        : (lang === 'de' ? 'Mehr lesen' : 'Read more');
+    });
+
+    /* ── DESCRIPTION COLLAPSE (Projekt-Overlay) ── */
+    function setupDescCollapse() {
+      const wrap   = document.getElementById('po-desc-wrap');
+      const desc   = document.getElementById('po-desc');
+      const toggle = document.getElementById('desc-toggle');
+      if (!wrap || !desc || !toggle) return;
+      wrap.classList.remove('is-collapsed');
+      toggle.style.display = 'none';
+      const collapseH = parseFloat(getComputedStyle(document.documentElement).fontSize) * 10;
+      if (desc.scrollHeight > collapseH + 8) {
+        wrap.classList.add('is-collapsed');
+        toggle.style.display = 'block';
+        const lang = document.documentElement.lang || 'en';
+        toggle.textContent = lang === 'de' ? 'Mehr lesen' : 'Read more';
+      }
+    }
+
+    document.getElementById('desc-toggle').addEventListener('click', function () {
+      const wrap = document.getElementById('po-desc-wrap');
+      const isCollapsed = wrap.classList.contains('is-collapsed');
+      wrap.classList.toggle('is-collapsed');
+      const lang = document.documentElement.lang || 'en';
+      this.textContent = isCollapsed
+        ? (lang === 'de' ? 'Weniger' : 'Less')
+        : (lang === 'de' ? 'Mehr lesen' : 'Read more');
+    });
+
+    async function openProject(projectId) {
+      let p = null;
+      try {
+        const all = await Sanity.getProjects();
+        p = (all || []).find(sp => sp._id === String(projectId));
+      } catch(e) {}
+      if (!p) return;
+
+      const title   = p.title       || '';
+      const year    = p.year        || '—';
+      const agency  = p.agency      || '';
+      const desc    = p.description    || '';
+      const desc_de = p.description_de || '';
+      const tags    = p.tags        || [];
+      const slides  = p.slides      || [];
+
+      document.getElementById('po-title').textContent  = title;
+      document.getElementById('po-year').textContent   = year;
+
+      // Agency: hide column if empty
+      const agencyCol = document.getElementById('po-agency-col');
+      if (agencyCol) agencyCol.style.display = agency ? '' : 'none';
+      document.getElementById('po-agency').textContent = agency || '—';
+
+      // Description with language support
+      const descEl    = document.getElementById('po-desc');
+      const descHtml  = toParaHtml(desc);
+      const descDeHtml = desc_de ? toParaHtml(desc_de) : '';
+      descEl.innerHTML = descHtml;
+      descEl.setAttribute('data-en', descHtml);
+      if (descDeHtml) descEl.setAttribute('data-de', descDeHtml);
+
+      // Tags with translation support
+      document.getElementById('po-tags').innerHTML = tags.map(t =>
+        `<span class="po-tag" data-en="${t}" data-de="${window.Sanity?.tagLabel(t,'de') || t}">${t}</span>`
+      ).join('');
+
+      // Reset collapse state
+      document.getElementById('po-desc-wrap').classList.remove('is-collapsed');
+      document.getElementById('desc-toggle').style.display = 'none';
+
+      renderFeature(p);
+      buildGallery(p.slides || []);
+
+      projectOverlay.classList.add('open');
+      isProjectOpen = true;
+      document.body.classList.add('popup-open');
+      const scrollY = window.scrollY;
+      document.body.style.cssText += `position:fixed;top:-${scrollY}px;left:0;right:0;`;
+      document.body.dataset.scrollY = scrollY;
+      requestAnimationFrame(() => { goToGalSlide(0); setupDescCollapse(); });
+    }
+
+    function closeProject() {
+      projectOverlay.classList.remove('open');
+      isProjectOpen = false;
+      document.body.classList.remove('popup-open');
+      const scrollY = parseInt(document.body.dataset.scrollY || '0');
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      window.scrollTo(0, scrollY);
+      closePOLightbox();
+      if (featLottieInst) { try { featLottieInst.destroy(); } catch(e) {} featLottieInst = null; }
+      poGalleryTrack.querySelectorAll('video').forEach(v => { v.pause(); v.src = ''; });
+    }
+
+    function poOpenLightbox(idx) {
+      const slide = galSlideEls[idx];
+      if (!slide) return;
+      const img = slide.querySelector('img');
+      if (!img) return;
+      poLightboxIndex = idx;
+      poLightboxImgEl.src = img.src;
+      poLightbox.classList.add('open');
+      const hiRes = img.src.replace(/\?.*/, '') + '?w=2400&q=90';
+      const preload = new Image();
+      preload.onload = () => { if (poLightbox.classList.contains('open')) poLightboxImgEl.src = hiRes; };
+      preload.src = hiRes;
+    }
+
+    function navigatePOLightbox(dir) {
+      let next = poLightboxIndex + dir;
+      while (next >= 0 && next < galSlideEls.length) {
+        const img = galSlideEls[next]?.querySelector('img');
+        if (img) { poLightboxIndex = next; poLightboxImgEl.src = img.src; return; }
+        next += dir;
+      }
+    }
+
+    function closePOLightbox() { poLightbox.classList.remove('open'); }
+
+    poLightboxClose.addEventListener('click', closePOLightbox);
+    poLightbox.addEventListener('click', e => { if (e.target === poLightbox) closePOLightbox(); });
+    poBackdrop.addEventListener('click', closeProject);
+    poClose.addEventListener('click', closeProject);
+
+    const galEdgePrev = document.getElementById('gal-edge-prev');
+    const galEdgeNext = document.getElementById('gal-edge-next');
+    galEdgePrev.addEventListener('click', () => goToGalSlide(galIndex - 1));
+    galEdgeNext.addEventListener('click', () => goToGalSlide(galIndex + 1));
+    galEdgePrev.addEventListener('mouseenter', () => { cursorEl.classList.remove('hover','arrow-next','zoom'); cursorEl.classList.add('arrow-prev'); });
+    galEdgePrev.addEventListener('mouseleave', () => cursorEl.classList.remove('arrow-prev','arrow-next'));
+    galEdgeNext.addEventListener('mouseenter', () => { cursorEl.classList.remove('hover','arrow-prev','zoom'); cursorEl.classList.add('arrow-next'); });
+    galEdgeNext.addEventListener('mouseleave', () => cursorEl.classList.remove('arrow-prev','arrow-next'));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && isProjectOpen) {
+        if (poLightbox.classList.contains('open')) closePOLightbox();
+        else closeProject();
+      }
+      if (isProjectOpen && !poLightbox.classList.contains('open')) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          goToGalSlide(e.key === 'ArrowLeft' ? galIndex - 1 : galIndex + 1);
+        }
+      }
+      if (isProjectOpen && poLightbox.classList.contains('open')) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          navigatePOLightbox(e.key === 'ArrowLeft' ? -1 : 1);
+        }
+      }
+    });
+  </script>
+
+
+  <script>
+    // Open explore overlay from ⌘K: find tile by sanity ID, trigger its popup
+    function openExploreById(sanityId) {
+      const tile = document.querySelector('.explore-tile[data-id="' + sanityId + '"]');
+      if (tile) {
+        tile.click();
+      } else {
+        // Item not yet rendered (e.g. filtered out) — just navigate to explore page
+        window.location.href = 'explore.html';
+      }
+    }
+    Sanity.populateCmdPalette({ onExploreItem: openExploreById });
+  </script>
+
+</body>
+</html>

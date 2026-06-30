@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Max Haditsch</title>
+  <meta name="description" content="Max Haditsch is a brand designer and strategist based in Vienna, Austria, with years of experience as a graphic designer and art director." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://maxhaditsch.com/about.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://maxhaditsch.com/about.html" />
+  <meta property="og:title" content="About — Max Haditsch" />
+  <meta property="og:description" content="Max Haditsch is a brand designer and strategist based in Vienna, Austria, with years of experience as a graphic designer and art director." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About — Max Haditsch" />
+  <meta name="twitter:description" content="Max Haditsch is a brand designer and strategist based in Vienna, Austria, with years of experience as a graphic designer and art director." />
+
+  <link rel="stylesheet" href="https://use.typekit.net/xdm2jjs.css" />
+  <!-- Apply theme before first paint — default: dark; resets on new session -->
+  <script>try{var t=sessionStorage.getItem('theme')||'dark';if(t==='light')document.documentElement.classList.add('light');}catch(e){}</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="sanity.js"></script>
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --bg:       #080808;
+      --surface:  #111111;
+      --text:     #EDEBE6;
+      --muted:    #9C9C9C;
+      --accent:   #C8461A;
+      --border:   #1E1E1A;
+      --font:     'area-inktrap', sans-serif;
+      --ease-expo: cubic-bezier(0.87, 0, 0.13, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html.light {
+      --bg:       #FFFFFF;
+      --surface:  #F5F5F3;
+      --text:     #0C0C0A;
+      --muted:    #888880;
+      --border:   #D4D1CA;
+    }
+
+    html.light #menu-overlay { background: #FFFFFF; }
+
+    /* ─── RESET ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: auto;
+      overflow-x: hidden;
+    }
+
+    body { min-height: 100vh; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    * { cursor: none !important; }
+
+    /* ─── CUSTOM CURSOR ──────────────────────── */
+    #cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out),
+                  background 0.2s ease, border-radius 0.25s var(--ease-out), opacity 0.2s ease;
+      will-change: transform;
+    }
+
+    #cursor.hover {
+      width: 48px; height: 48px;
+      background: transparent;
+      border: 1px solid var(--text);
+      mix-blend-mode: difference;
+    }
+
+    #cursor.hidden { opacity: 0; }
+
+    /* ─── NAVIGATION ─────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1.75rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 500;
+    }
+
+    #nav-logo {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    #nav-cmd {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.125rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    #nav-cmd kbd {
+      font-family: var(--font);
+      font-size: 1.125rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.35em;
+    }
+
+    #nav-menu-btn {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    #nav-menu-btn:hover { color: var(--text); }
+
+    /* ─── FULLSCREEN MENU OVERLAY ────────────── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: #050505;
+      z-index: 800;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 3rem 2.5rem;
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0s;
+      pointer-events: none; /* Safari: clip-path doesn't block pointer events */
+    }
+
+    #menu-overlay.open { clip-path: inset(0 0 0% 0); pointer-events: all; }
+    .menu-items { list-style: none; margin-bottom: 3rem; }
+
+    .menu-item {
+      overflow: hidden;
+      padding: 0.2rem 0 0.35em;
+      margin-bottom: -0.35em;
+    }
+
+    .menu-item a {
+      display: block;
+      font-size: clamp(5.5rem, 7.5vw, 8rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--muted);
+      transform: translateY(100%);
+      transition: color 0.2s ease;
+    }
+
+    @media (min-width: 1800px) {
+      .menu-item a { font-size: clamp(5.5rem, 7.5vw, 8rem); }
+    }
+
+    .menu-item a:hover { color: var(--text); }
+
+    .menu-item a .item-num {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      vertical-align: super;
+      margin-right: 0.5rem;
+      color: var(--muted);
+    }
+
+    .menu-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    .menu-footer-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .menu-footer-label { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .menu-footer-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+
+    #menu-close-btn {
+      position: absolute;
+      top: 1.75rem; right: 2.5rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: color 0.2s ease;
+    }
+    #menu-close-btn:hover { color: var(--text); }
+
+    .hover-line { transition: opacity 0.2s ease; }
+    .hover-line:hover { opacity: 0.6; }
+
+    /* ─── ⌘K COMMAND PALETTE ─────────────────── */
+    #cmd-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.8);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      z-index: 900;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 20vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    #cmd-overlay.open { opacity: 1; pointer-events: all; }
+
+    #cmd-box {
+      width: min(520px, 90vw);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #cmd-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      font-family: var(--font);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      outline: none;
+    }
+
+    #cmd-results { list-style: none; max-height: 320px; overflow-y: auto; }
+
+    .cmd-result {
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.1s ease;
+    }
+
+    .cmd-result:hover,
+    .cmd-result.active { background: color-mix(in srgb, var(--border) 50%, var(--surface)); }
+    .cmd-result-label { font-size: 0.875rem; color: var(--text); }
+    .cmd-result-tag { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ─── FIXED THEME TOGGLE (bottom-right) ─── */
+    #controls {
+      position: fixed;
+      bottom: 1.75rem;
+      right: 2.5rem;
+      z-index: 600;
+      pointer-events: none;
+    }
+
+    .controls-theme-toggle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text);
+      background: linear-gradient(to right, var(--text) 50%, transparent 50%);
+      cursor: pointer;
+      pointer-events: all;
+      transition: transform 0.3s var(--ease-out);
+    }
+
+    .controls-theme-toggle:hover { transform: rotate(180deg); }
+
+    .ctrl-group { display: flex; align-items: center; gap: 0.25rem; pointer-events: all; }
+
+    .ctrl-btn {
+      font-family: var(--font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 0.2rem 0.4rem;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    .ctrl-btn:hover { color: var(--text); }
+    .ctrl-btn.active { color: var(--text); }
+    .ctrl-divider { font-size: 0.75rem; color: var(--border); pointer-events: none; }
+
+    /* ─── PAGE FOOTER ────────────────────────── */
+    .footer-cta { padding: 7.5rem 2.5rem 5rem; }
+    .footer-cta-content { margin-top: 4rem; display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: end; }
+    .footer-cta-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; }
+    .footer-cta-headline { font-size: clamp(2rem, 4vw, 4rem); font-weight: 600; letter-spacing: -0.03em; line-height: 0.95; color: var(--text); }
+    .footer-cta-email { display: inline-block; font-size: 0.9375rem; font-weight: 600; letter-spacing: 0.04em; color: var(--text); transition: color 0.2s ease; }
+    .footer-cta-email:hover { color: var(--muted); }
+    .footer-socials { display: flex; gap: 2rem; }
+    .footer-socials a { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); transition: color 0.2s ease; }
+    .footer-socials a:hover { color: var(--text); }
+
+    .footer-bar {
+      padding: 1.5rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 10rem;
+    }
+    .footer-bar-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-bar-label { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .footer-bar-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+
+    /* ─── ABOUT PAGE — EDITORIAL LAYOUT ──────── */
+
+    /* Opening label — wide negative space above */
+    .about-label {
+      padding: 12rem 2.5rem 0;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Name — large, offset left */
+    .about-intro {
+      padding: 6rem 2.5rem 0;
+      max-width: 900px;
+    }
+
+    .about-name {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+    }
+
+    .about-role {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 1.5rem;
+    }
+
+    /* Photo — asymmetric, pushed right, generous vertical space */
+    .about-photo-section {
+      padding: 5rem 2.5rem 0;
+      display: grid;
+      grid-template-columns: 1fr 4fr 7fr;
+      gap: 0;
+    }
+
+    .about-photo {
+      grid-column: 2 / 3;
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .about-photo-placeholder {
+      font-size: 0.875rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* Bio text — narrower column, offset right, lots of breathing room */
+    .about-bio-section {
+      padding: 28rem 2.5rem 0;
+      display: grid;
+      grid-template-columns: 5fr 4fr 3fr;
+      gap: 0;
+    }
+
+    .about-bio-section--secondary {
+      padding-top: 5rem;
+    }
+
+    .about-bio-inner {
+      grid-column: 2 / 4;
+    }
+
+    .about-bio {
+      font-size: clamp(2.5rem, 5.5vw, 5.5rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 4rem;
+    }
+
+    .about-bio .word {
+      display: inline;
+    }
+
+    .about-bio strong {
+      font-weight: 600;
+    }
+
+    /* Pull quote — large italic accent between bio paragraphs */
+    .about-quote-section {
+      padding: 6rem 2.5rem;
+      max-width: 750px;
+    }
+
+    .about-quote {
+      font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      color: var(--text);
+      font-style: italic;
+      position: relative;
+      padding-left: 2rem;
+      border-left: 2px solid var(--border);
+    }
+
+    /* Second photo — smaller, offset left */
+    .about-photo-secondary {
+      padding: 10rem 2.5rem 0;
+      display: grid;
+      grid-template-columns: 3fr 4fr 5fr;
+      gap: 0;
+    }
+
+    .about-photo-sm {
+      grid-column: 3 / 4;
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Contact — generous vertical rhythm */
+    .about-contact {
+      padding: 10rem 2.5rem 8rem;
+      max-width: 900px;
+    }
+
+    .contact-label-row {
+      margin-bottom: 4rem;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+
+    .contact-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .contact-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-val {
+      font-size: 0.9375rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .contact-val a {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.1em;
+      transition: border-color 0.2s ease;
+    }
+
+    .contact-val a:hover {
+      border-color: var(--muted);
+    }
+
+    /* Reveal utility */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 768px) {
+      #nav { padding: 1.25rem 1.5rem; }
+      #nav-cmd { display: none; }
+      .about-label { padding: 7rem 1.5rem 0; }
+      .about-intro { padding: 3rem 1.5rem 0; }
+      .about-photo-section { padding: 4rem 1.5rem 0; grid-template-columns: 1fr; }
+      .about-photo { grid-column: 1; }
+      .about-bio-section { padding: 14rem 1.5rem 0; grid-template-columns: 1fr; }
+      .about-bio-inner { grid-column: 1; }
+      .about-bio { font-size: clamp(2.8rem, 9.5vw, 5.5rem); }
+      .about-quote-section { padding: 3rem 1.5rem; }
+      .about-photo-secondary { padding: 0 1.5rem; grid-template-columns: 1fr; }
+      .about-photo-sm { grid-column: 1; }
+      .about-contact { padding: 5rem 1.5rem 5rem; }
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .menu-item a { font-size: clamp(3rem, 12vw, 9.5rem); line-height: 1.2; }
+      .menu-item { padding: 0.35rem 0 0.5em; }
+      .menu-items { margin-bottom: 2rem; }
+      .menu-footer { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+      .footer-cta { padding: 4rem 1.5rem 3rem; }
+      .footer-cta-content { grid-template-columns: 1fr; }
+      .footer-cta-right { align-items: flex-start; }
+      .footer-bar { flex-direction: column; align-items: flex-start; gap: 1.25rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+
+      /* ── H2 bigger on mobile ── */
+      .footer-cta-headline { font-size: clamp(2.5rem, 8vw, 4rem); }
+    }
+  </style>
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- FULLSCREEN MENU OVERLAY -->
+  <div id="menu-overlay" role="dialog" aria-label="Navigation">
+    <button id="menu-close-btn" aria-label="Close menu">[ close ]</button>
+    <ul class="menu-items">
+      <li class="menu-item"><a href="work.html" class="nav-link"><span class="item-num">01</span>Work</a></li>
+      <li class="menu-item"><a href="explore.html" class="nav-link"><span class="item-num">02</span>Explore</a></li>
+      <li class="menu-item"><a href="index.html#services" class="nav-link"><span class="item-num">03</span>Services</a></li>
+      <li class="menu-item"><a href="about.html" class="nav-link"><span class="item-num">04</span>About</a></li>
+      <li class="menu-item"><a href="contact.html" class="nav-link"><span class="item-num">05</span>Contact</a></li>
+    </ul>
+    <div class="menu-footer">
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Based in</span>
+        <span class="menu-footer-val">Vienna, Austria</span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Contact</span>
+        <span class="menu-footer-val"><a href="mailto:office@maxhaditsch.com" class="hover-line">office@maxhaditsch.com</a></span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+        <span class="menu-footer-val"><a href="privacy.html" class="hover-line">Privacy Policy</a></span>
+      </div>
+      <div class="menu-footer-col" style="display:none;">
+        <div class="ctrl-group">
+          <button class="ctrl-btn" id="menu-btn-de" onclick="setLang('de')">DE</button>
+          <span class="ctrl-divider">/</span>
+          <button class="ctrl-btn active" id="menu-btn-en" onclick="setLang('en')">EN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⌘K COMMAND PALETTE -->
+  <div id="cmd-overlay" role="dialog" aria-label="Command palette">
+    <div id="cmd-box">
+      <input id="cmd-input" type="text" placeholder="Navigate or search…" autocomplete="off" />
+      <ul id="cmd-results">
+        <li class="cmd-result active" data-href="index.html"><span class="cmd-result-label">Home</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="work.html"><span class="cmd-result-label">Work — Case Studies</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="explore.html"><span class="cmd-result-label">Explore — Creative Universe</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="index.html#services"><span class="cmd-result-label">Services</span><span class="cmd-result-tag">Section</span></li>
+        <li class="cmd-result" data-href="about.html"><span class="cmd-result-label">About</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="contact.html"><span class="cmd-result-label">Contact</span><span class="cmd-result-tag">Page</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FIXED NAVIGATION -->
+  <nav id="nav">
+    <a id="nav-logo" href="index.html" class="hover-line">&#169; MH</a>
+    <span id="nav-cmd"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+    <button id="nav-menu-btn" aria-label="Open menu" data-de="[ Men&#252; ]" data-en="[ Menu ]">[ Menu ]</button>
+  </nav>
+
+  <!-- FIXED THEME TOGGLE (bottom-right) -->
+  <div id="controls">
+    <div class="controls-theme-toggle" id="controls-theme-toggle" role="button" aria-label="Toggle theme" tabindex="0"></div>
+  </div>
+
+  <!-- ABOUT — BIO TEXT -->
+  <div class="about-bio-section">
+    <div class="about-bio-inner">
+      <p class="about-bio reveal" data-de="Manche Menschen entdecken Design durch Kunst. Ich entdeckte es durch Marken. Als Kind konnte ich Slogans auswendig, bevor ich erklären konnte, was eine Marke überhaupt ist. Ich war einfach fasziniert davon, wie bestimmte Unternehmen eine Persönlichkeit, eine Stimme, eine eigene Welt zu haben schienen. Diese Faszination führte mich schließlich zur 3D-Animation und von dort zum Design, das ich studiert habe. Ich arbeitete in kleinen Agenturen, verbrachte Zeit in Berlin und fand schließlich meine Wahlheimat in Wien. Bei all dem blieb Markendesign die Konstante. Meine Zeit bei LKNR | THE BRAND AGENCY hat diesen Fokus erheblich geschärft – dort entwickelte ich ein tieferes Verständnis für Markenstrategie, beschäftigte mich mit den Prinzipien des Neuromarketings und lernte, wie man strategisches Denken in Design übersetzt, das echte emotionale Wirkung entfaltet." data-en="Some people discover design through art. I discovered it through brands. As a kid, I could recite slogans before I could explain what a brand even was. I was just drawn to the way certain companies seemed to have a personality, a voice, a world of their own. That fascination eventually led me to 3D animation, and from there to design, which I went on to study. I worked in small agencies, spent some time in Berlin, and eventually found my home in Vienna. Throughout all of it, brand design remained the constant. My time at LKNR | THE BRAND AGENCY sharpened that focus considerably &#8211; it&#8217;s where I developed a deeper understanding of brand strategy, explored the principles of neuromarketing, and learned how to translate strategic thinking into design that carries real emotional weight.">Some people discover design through art. I discovered it through brands. As a kid, I could recite slogans before I could explain what a brand even was. I was just drawn to the way certain companies seemed to have a personality, a voice, a world of their own. That fascination eventually led me to 3D animation, and from there to design, which I went on to study. I worked in small agencies, spent some time in Berlin, and eventually found my home in Vienna. Throughout all of it, brand design remained the constant. My time at LKNR | THE BRAND AGENCY sharpened that focus considerably &#8211; it&#8217;s where I developed a deeper understanding of brand strategy, explored the principles of neuromarketing, and learned how to translate strategic thinking into design that carries real emotional weight.</p>
+    </div>
+  </div>
+
+  <!-- ABOUT — PRIMARY PHOTO -->
+  <div class="about-photo-section">
+    <div class="about-photo reveal">
+      <span class="about-photo-placeholder">Photo</span>
+    </div>
+  </div>
+
+  <!-- ABOUT — BIO CONTINUED -->
+  <div class="about-bio-section about-bio-section--secondary">
+    <div class="about-bio-inner">
+      <p class="about-bio reveal" data-de="Wenn ich nicht gerade an Designs arbeite (oder über Psychologie und Marken lese), verbringe ich gerne Zeit mit meiner Familie, genieße ein gutes Essen mit einem köstlichen österreichischen Wein, erlebe die Natur oder erkunde unbekannte Orte." data-en="When I&#8217;m not designing (or reading about psychology or branding), I love spending time with my family, enjoying a good meal with some tasty Austrian wine, experiencing nature or traveling the unknown.">When I&#8217;m not designing (or reading about psychology or branding), I love spending time with my family, enjoying a good meal with some tasty Austrian wine, experiencing nature or traveling the unknown.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="footer-cta">
+      <p class="section-label" data-de="Kontakt" data-en="Contact">Contact</p>
+      <div class="footer-cta-content">
+        <div class="footer-cta-left">
+          <h2 class="footer-cta-headline reveal" data-de="Get in touch." data-en="Get in touch.">Get in touch.</h2>
+        </div>
+        <div class="footer-cta-right">
+          <a href="mailto:office@maxhaditsch.com" class="footer-cta-email hover-line reveal">office@maxhaditsch.com</a>
+          <div class="footer-socials reveal">
+            <a href="tel:+436769033338" class="hover-line">+43 676 90 333 38</a>
+            <a href="https://www.linkedin.com/in/max-r-haditsch" target="_blank" rel="noopener" class="hover-line">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="footer-bar-col">
+        <span class="footer-bar-label">Based in</span>
+        <span class="footer-bar-val">Vienna, Austria</span>
+      </div>
+      <div class="footer-bar-col">
+        <span class="footer-bar-label">Contact</span>
+        <span class="footer-bar-val"><a href="mailto:office@maxhaditsch.com">office@maxhaditsch.com</a></span>
+      </div>
+      <div class="footer-bar-col">
+        <span class="footer-bar-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+        <span class="footer-bar-val"><a href="privacy.html" class="hover-line">Privacy Policy</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ─── CURSOR ─── */
+    const cursorEl = document.getElementById('cursor');
+    let mouseX = -100, mouseY = -100, curX = -100, curY = -100;
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+    document.addEventListener('mouseleave', () => cursorEl.classList.add('hidden'));
+    document.addEventListener('mouseenter', () => cursorEl.classList.remove('hidden'));
+
+    (function animateCursor() {
+      curX += (mouseX - curX) * 0.14;
+      curY += (mouseY - curY) * 0.14;
+      cursorEl.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(animateCursor);
+    })();
+
+    document.querySelectorAll('a, button, .controls-theme-toggle').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorEl.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursorEl.classList.remove('hover'));
+    });
+
+    /* ─── SCROLL REVEALS ─── */
+    gsap.utils.toArray('.reveal').forEach(el => {
+      if (el.classList.contains('about-bio')) return; // handled by initBioReveal
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+
+    /* ─── BIO WORD REVEAL ON SCROLL ─── */
+    let currentBioLang = 'en';
+
+    function initBioReveal(lang) {
+      lang = lang || currentBioLang;
+      currentBioLang = lang;
+
+      document.querySelectorAll('.about-bio').forEach(el => {
+        // Kill any existing ScrollTriggers on this element
+        ScrollTrigger.getAll()
+          .filter(st => st.trigger === el)
+          .forEach(st => st.kill());
+
+        // Read text from data attribute for current language
+        const rawText = (el.getAttribute('data-' + lang) || el.textContent)
+          .replace(/<[^>]+>/g, '').trim();
+        if (!rawText) return;
+
+        // Override .reveal initial state — element is always visible
+        gsap.set(el, { opacity: 1, y: 0 });
+
+        // Split text into word spans
+        const words = rawText.split(/\s+/).filter(Boolean);
+        el.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+
+        const wordEls = [...el.querySelectorAll('.word')];
+        gsap.set(wordEls, { opacity: 0.18 });
+
+        // Scrub words from dim → full opacity as you scroll through the element
+        gsap.to(wordEls, {
+          opacity: 1,
+          ease: 'none',
+          stagger: { each: 0.05 },
+          duration: 0.05,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            end: 'bottom 55%',
+            scrub: 1.5,
+          }
+        });
+      });
+    }
+
+    /* ─── NAVIGATION — FULLSCREEN OVERLAY ─── */
+    const menuOverlay = document.getElementById('menu-overlay');
+    const menuItems = menuOverlay.querySelectorAll('.menu-item a');
+    const menuFooter = menuOverlay.querySelector('.menu-footer');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+    const navMenuBtn = document.getElementById('nav-menu-btn');
+    let menuOpen = false;
+
+    function openMenu() {
+      menuOpen = true;
+      menuOverlay.classList.add('open');
+      navMenuBtn.textContent = '';
+      gsap.to(menuOverlay, { clipPath: 'inset(0 0 0% 0)', duration: 0.8, ease: 'power4.inOut' });
+      gsap.to(menuItems, { y: '0%', duration: 0.9, stagger: 0.06, ease: 'power4.out', delay: 0.3 });
+      gsap.to(menuFooter, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.6 });
+      menuCloseBtn.style.pointerEvents = 'auto';
+      gsap.to(menuCloseBtn, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', delay: 0.5 });
+    }
+
+    function closeMenu() {
+      menuOpen = false;
+      navMenuBtn.textContent = '[ Menu ]';
+      gsap.to(menuItems, { y: '100%', duration: 0.5, stagger: 0.04, ease: 'power3.in' });
+      gsap.to(menuFooter, { opacity: 0, y: 20, duration: 0.3 });
+      gsap.to(menuCloseBtn, { opacity: 0, y: -8, duration: 0.3, onComplete: () => { menuCloseBtn.style.pointerEvents = 'none'; } });
+      gsap.to(menuOverlay, {
+        clipPath: 'inset(0 0 100% 0)', duration: 0.7, ease: 'power4.inOut', delay: 0.2,
+        onComplete: () => menuOverlay.classList.remove('open')
+      });
+    }
+
+    navMenuBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+    menuCloseBtn.addEventListener('click', closeMenu);
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => closeMenu());
+    });
+
+    /* ─── ⌘K COMMAND PALETTE ─── */
+    const cmdOverlay = document.getElementById('cmd-overlay');
+    const cmdInput = document.getElementById('cmd-input');
+    const getCR = () => document.querySelectorAll('#cmd-results .cmd-result');
+    let selectedIdx = 0;
+
+    function openCmdPalette() { cmdOverlay.classList.add('open'); cmdInput.value = ''; cmdInput.focus(); resetCmdResults(); }
+    function closeCmdPalette() { cmdOverlay.classList.remove('open'); }
+    function resetCmdResults() {
+      getCR().forEach((r, i) => { r.classList.toggle('active', i === 0); r.style.display = ''; });
+      selectedIdx = 0;
+    }
+
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); cmdOverlay.classList.contains('open') ? closeCmdPalette() : openCmdPalette(); }
+      if (e.key === 'Escape') { closeCmdPalette(); if (menuOpen) closeMenu(); }
+      if (cmdOverlay.classList.contains('open')) {
+        const visible = [...getCR()].filter(r => r.style.display !== 'none');
+        if (e.key === 'ArrowDown') { e.preventDefault(); visible[selectedIdx]?.classList.remove('active'); selectedIdx = Math.min(selectedIdx + 1, visible.length - 1); visible[selectedIdx]?.classList.add('active'); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); visible[selectedIdx]?.classList.remove('active'); selectedIdx = Math.max(selectedIdx - 1, 0); visible[selectedIdx]?.classList.add('active'); }
+        if (e.key === 'Enter') {
+          const active = visible[selectedIdx];
+          if (active) { window.location.href = active.dataset.href; closeCmdPalette(); }
+        }
+      }
+    });
+
+    cmdOverlay.addEventListener('click', e => { if (e.target === cmdOverlay) closeCmdPalette(); });
+    cmdInput.addEventListener('input', () => {
+      const q = cmdInput.value.toLowerCase();
+      selectedIdx = 0;
+      getCR().forEach(r => { const label = r.querySelector('.cmd-result-label').textContent.toLowerCase(); r.style.display = (!q || label.includes(q)) ? '' : 'none'; r.classList.remove('active'); });
+      const firstVisible = [...getCR()].find(r => r.style.display !== 'none');
+      if (firstVisible) firstVisible.classList.add('active');
+    });
+
+    document.getElementById('nav-cmd').addEventListener('click', openCmdPalette);
+
+    /* ─── LANGUAGE SWITCH ─── */
+    function setLang(lang) {
+      document.querySelectorAll('[data-de][data-en]').forEach(el => {
+        if (el.classList.contains('about-bio')) return; // handled by initBioReveal
+        const val = el.dataset[lang];
+        if (!val) return;
+        el.innerHTML = val.includes('<') ? val : '';
+        if (!val.includes('<')) el.textContent = val;
+      });
+      document.getElementById('menu-btn-de').classList.toggle('active', lang === 'de');
+      document.getElementById('menu-btn-en').classList.toggle('active', lang === 'en');
+      initBioReveal(lang);
+    }
+
+    /* ─── THEME SWITCH (persisted via sessionStorage — resets on new tab/session) ─── */
+    let currentTheme = 'dark'; try { currentTheme = sessionStorage.getItem('theme') || 'dark'; } catch(e) {}
+    function setTheme(theme) {
+      currentTheme = theme;
+      try { sessionStorage.setItem('theme', theme); } catch(e) {}
+      document.documentElement.classList.toggle('light', theme === 'light');
+    }
+    setTheme(currentTheme);
+    document.getElementById('controls-theme-toggle').addEventListener('click', () => {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    // Initial word reveal (after DOM is ready)
+    initBioReveal('en');
+
+    // Entrance animation for first section — like H1 on homepage
+    gsap.fromTo('.about-bio-section',
+      { opacity: 0, y: 32 },
+      { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.15, stagger: 0 }
+    );
+  </script>
+
+  <script>
+    async function loadAboutContent() {
+      try {
+        const about = await Sanity.getAboutPage()
+        if (!about) return
+        if (about.seo) Sanity.applySeoMeta(about.seo, 'About — Max Haditsch')
+
+        // Main bio paragraph — update data attributes only; initBioReveal handles the split
+        const bioEls = document.querySelectorAll('.about-bio')
+        if (bioEls[0]) {
+          if (about.bioMain)    bioEls[0].setAttribute('data-en', about.bioMain)
+          if (about.bioMain_de) bioEls[0].setAttribute('data-de', about.bioMain_de)
+        }
+
+        // Secondary / personal paragraph
+        if (bioEls[1]) {
+          if (about.bioSecondary)    bioEls[1].setAttribute('data-en', about.bioSecondary)
+          if (about.bioSecondary_de) bioEls[1].setAttribute('data-de', about.bioSecondary_de)
+        }
+
+        // Re-run word reveal with Sanity content
+        initBioReveal(currentBioLang)
+
+        // Primary photo
+        if (about.photo && about.photo.asset) {
+          const imgUrl = Sanity.imageUrl(about.photo.asset._ref, { width: 1200, quality: 85 })
+          const container = document.querySelector('.about-photo')
+          if (container && imgUrl) {
+            container.querySelector('.about-photo-placeholder')?.remove()
+            const img = document.createElement('img')
+            img.src = imgUrl
+            img.alt = 'Max Haditsch'
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;'
+            container.appendChild(img)
+          }
+        }
+
+        // Secondary photo
+        if (about.photoSecondary && about.photoSecondary.asset) {
+          const imgUrl = Sanity.imageUrl(about.photoSecondary.asset._ref, { width: 1200, quality: 85 })
+          const container = document.querySelector('.about-photo-sm')
+          if (container && imgUrl) {
+            container.querySelector('.about-photo-placeholder')?.remove()
+            const img = document.createElement('img')
+            img.src = imgUrl
+            img.alt = 'Max Haditsch'
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;'
+            container.appendChild(img)
+          }
+        }
+
+      } catch (err) {
+        console.warn('Sanity about content failed, using fallback:', err.message)
+      }
+    }
+
+    loadAboutContent()
+  </script>
+
+  <script>
+    Sanity.populateCmdPalette();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+/* Area Inktrap by Blaze Type via Adobe Fonts */
+@import url('https://use.typekit.net/xdm2jjs.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────── */
+
+/* Dark Mode (default) */
+:root {
+  --color-bg:      #080808;
+  --color-surface: #111111;
+  --color-text:    #EDEBE6;
+  --color-muted:   #555550;
+  --color-accent:  #C8461A;
+  --color-border:  #1E1E1A;
+
+  --font-sans: 'area-inktrap', sans-serif;
+}
+
+/* Light Mode */
+:root[data-theme="light"] {
+  --color-bg:      #F5F3EE;
+  --color-surface: #ECEAE4;
+  --color-text:    #0A0A08;
+  --color-muted:   #8A8880;
+  --color-accent:  #C8461A;
+  --color-border:  #D8D5CE;
+}
+
+/* ─────────────────────────────────────────
+   BASE RESET
+───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600; /* Mindestgewicht: Semibold */
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Cursor hidden — custom cursor takes over */
+*, *::before, *::after { cursor: none !important; }
+
+/* ─────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────── */
+/* Minimum: 14px = 0.875rem @ 16px base */
+.text-2xs  { font-size: 0.875rem;  line-height: 1.25rem; }  /* 14px */
+.text-xs   { font-size: 0.875rem;  line-height: 1.25rem; }  /* 14px */
+.text-sm   { font-size: 0.9375rem; line-height: 1.5rem; }   /* 15px */
+
+.label {
+  font-size: 0.875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Hover underline */
+.hover-line { position: relative; display: inline-block; }
+.hover-line::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0;
+  width: 0%; height: 1px;
+  background: currentColor;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-line:hover::after { width: 100%; }
+
+/* ─────────────────────────────────────────
+   ANIMATIONS (for GSAP targets)
+───────────────────────────────────────── */
+.clip-reveal { clip-path: inset(0 100% 0 0); }
+.y-reveal { transform: translateY(110%); }
+.fade-up { opacity: 0; transform: translateY(24px); }
+
+@keyframes float-a {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(0.5deg); }
+  66%       { transform: translateY(6px) rotate(-0.5deg); }
+}
+@keyframes float-b {
+  0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+  50%       { transform: translateY(-16px) rotate(0.5deg); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee { animation: marquee 18s linear infinite; }
+.animate-float-a { animation: float-a 8s ease-in-out infinite; }
+.animate-float-b { animation: float-b 10s ease-in-out infinite; }
+
+/* ─────────────────────────────────────────
+   IMAGES — keine Konturen
+───────────────────────────────────────── */
+img {
+  border: none !important;
+  outline: none !important;
+  display: block;
+}
+
+/* ─────────────────────────────────────────
+   TYPOGRAFIE — einheitliche Hierarchie
+───────────────────────────────────────── */
+
+/* H1 — alle Seiten */
+h1, .h1 {
+  font-family: var(--font-sans);
+  font-weight: 700;                     /* Bold — eine Stufe stärker */
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+/* H2 */
+h2, .h2 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+/* H3 */
+h3, .h3 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Body Copy */
+.copy {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9375rem;        /* 15px */
+  line-height: 1.85;
+  color: var(--color-muted);
+}
+
+/* Tags (Filter + Overlay) */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.75rem;           /* 12px */
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  border: 1px solid var(--color-muted); /* Darkmode: Border = Tag-Schriftfarbe */
+  padding: 0.3rem 0.65rem;
+  border-radius: 2px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+.tag:hover,
+.tag.active {
+  color: var(--color-text);
+  border-color: var(--color-muted);
+}
+.tag.active {
+  background: transparent;
+}
+
+/* Buttons */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Navigation — Hauptmenüpunkte */
+.nav-item {
+  font-family: var(--font-sans);
+  font-weight: 700;
+}
+
+/* Startseiten-Animation Text + alle Hero-Texte */
+.hero-text, .start-text {
+  font-weight: 700;
+}
+
+/* Label (Seiten-Bezeichner oben links) */
+.label {
+  font-weight: 700;
+}

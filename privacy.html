@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Max Haditsch</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="stylesheet" href="https://use.typekit.net/xdm2jjs.css" />
+  <!-- Apply theme before first paint — default: dark; resets on new session -->
+  <script>try{var t=sessionStorage.getItem('theme')||'dark';if(t==='light')document.documentElement.classList.add('light');}catch(e){}</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────── */
+    :root {
+      --bg:       #080808;
+      --surface:  #111111;
+      --text:     #EDEBE6;
+      --muted:    #9C9C9C;
+      --accent:   #C8461A;
+      --border:   #1E1E1A;
+      --font:     'area-inktrap', sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    html.light {
+      --bg:       #FFFFFF;
+      --surface:  #F5F5F3;
+      --text:     #0C0C0A;
+      --muted:    #888880;
+      --border:   #D4D1CA;
+    }
+
+    /* ─── RESET ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    body { min-height: 100vh; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    * { cursor: none !important; }
+
+    /* ─── CUSTOM CURSOR ──────────────────────── */
+    #cursor {
+      position: fixed; top: 0; left: 0;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out),
+                  background 0.2s ease, border-radius 0.25s var(--ease-out), opacity 0.2s ease;
+    }
+    #cursor.hover {
+      width: 48px; height: 48px;
+      background: transparent;
+      border: 1px solid var(--text);
+      mix-blend-mode: difference;
+    }
+    #cursor.hidden { opacity: 0; }
+
+    /* ─── FIXED THEME TOGGLE ─────────────────── */
+    #controls {
+      position: fixed; bottom: 1.75rem; right: 2.5rem;
+      z-index: 600; pointer-events: none;
+    }
+    .controls-theme-toggle {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--text);
+      background: linear-gradient(to right, var(--text) 50%, transparent 50%);
+      pointer-events: all;
+      transition: transform 0.3s var(--ease-out);
+    }
+    .controls-theme-toggle:hover { transform: rotate(180deg); }
+
+    /* ─── ⌘K COMMAND PALETTE ─────────────────── */
+    #cmd-overlay {
+      position: fixed; inset: 0;
+      background: rgba(8,8,8,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 14vh;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    #cmd-overlay.open { opacity: 1; pointer-events: all; }
+    #cmd-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      width: min(560px, 90vw);
+      overflow: hidden;
+    }
+    #cmd-input {
+      width: 100%; padding: 1rem 1.25rem;
+      background: none; border: none; border-bottom: 1px solid var(--border);
+      font-family: var(--font); font-size: 1rem; font-weight: 600;
+      color: var(--text); outline: none;
+    }
+    #cmd-input::placeholder { color: var(--muted); }
+    #cmd-results { list-style: none; }
+    .cmd-result {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9375rem; font-weight: 600;
+      color: var(--muted); transition: background 0.15s;
+    }
+    .cmd-result.active { background: var(--border); color: var(--text); }
+    .cmd-result-tag { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+    /* ─── PAGE CONTENT ───────────────────────── */
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 10rem 2.5rem 6rem;
+    }
+
+    .page-label {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      margin-bottom: 4rem;
+    }
+
+    .legal-section { margin-bottom: 2.5rem; }
+
+    .legal-label {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.6rem;
+    }
+
+    .legal-body {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .legal-body p + p { margin-top: 0.5rem; }
+
+    .legal-body a {
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .legal-body a:hover { border-color: var(--text); }
+
+    .legal-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* ─── FOOTER BAR ─────────────────────────── */
+    .footer-bar {
+      padding: 1.5rem 2.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 6rem;
+      align-items: flex-start;
+    }
+    .footer-bar-col { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-bar-label {
+      font-size: 0.875rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    .footer-bar-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+    .footer-bar-val a { transition: opacity 0.2s; }
+    .footer-bar-val a:hover { opacity: 0.6; }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 768px) {
+      #nav { padding: 1.25rem 1.5rem; }
+      main { padding: 8rem 1.5rem 5rem; }
+      .footer-bar { flex-direction: column; gap: 1.25rem; padding: 1.5rem; }
+    }
+  </style>
+
+  <link rel="stylesheet" href="menu.css?v=7" />
+  <meta property="og:image" content="https://maxhaditsch.com/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="https://maxhaditsch.com/og-image.jpg" />
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <!-- FULLSCREEN MENU OVERLAY -->
+  <button id="menu-close-btn" aria-label="Close menu">close</button>
+  <div id="menu-overlay" role="dialog" aria-label="Navigation">
+    <ul class="menu-items">
+      <li class="menu-item"><a href="work.html" class="nav-link"><span class="item-num">01</span>Work</a></li>
+      <li class="menu-item"><a href="explore.html" class="nav-link"><span class="item-num">02</span>Explore</a></li>
+      <li class="menu-item"><a href="index.html#services" class="nav-link"><span class="item-num">03</span>Services</a></li>
+      <li class="menu-item"><a href="about.html" class="nav-link"><span class="item-num">04</span>About</a></li>
+      <li class="menu-item"><a href="contact.html" class="nav-link"><span class="item-num">05</span>Contact</a></li>
+    </ul>
+    <div class="menu-footer">
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Based in</span>
+        <span class="menu-footer-val">Vienna, Austria</span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-label">Contact</span>
+        <span class="menu-footer-val"><a href="mailto:office@maxhaditsch.com" class="hover-line">office@maxhaditsch.com</a></span>
+      </div>
+      <div class="menu-footer-col">
+        <span class="menu-footer-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+        <span class="menu-footer-val"><a href="privacy.html" class="hover-line">Privacy Policy</a></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⌘K COMMAND PALETTE -->
+  <div id="cmd-overlay" role="dialog" aria-label="Command palette">
+    <div id="cmd-box">
+      <input id="cmd-input" type="text" placeholder="Navigate or search…" autocomplete="off" />
+      <ul id="cmd-results">
+        <li class="cmd-result active" data-href="index.html"><span class="cmd-result-label">Home</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="work.html"><span class="cmd-result-label">Work — Case Studies</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="explore.html"><span class="cmd-result-label">Explore — Creative Universe</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="index.html#services"><span class="cmd-result-label">Services</span><span class="cmd-result-tag">Section</span></li>
+        <li class="cmd-result" data-href="about.html"><span class="cmd-result-label">About</span><span class="cmd-result-tag">Page</span></li>
+        <li class="cmd-result" data-href="contact.html"><span class="cmd-result-label">Contact</span><span class="cmd-result-tag">Page</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FIXED NAVIGATION -->
+  <nav id="nav">
+    <a id="nav-logo" href="index.html" class="hover-line">&#169; MH</a>
+    <span id="nav-cmd"><kbd>&#8984;</kbd><kbd>K</kbd></span>
+    <button id="nav-menu-btn" aria-label="Open menu">Menu</button>
+  </nav>
+
+  <!-- FIXED THEME TOGGLE -->
+  <div id="controls">
+    <div class="controls-theme-toggle" id="controls-theme-toggle" role="button" aria-label="Toggle theme" tabindex="0"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <main>
+    <p class="page-label">Legal</p>
+    <h1 class="page-title">Privacy Policy</h1>
+
+    <div class="legal-section">
+      <p class="legal-label">Controller</p>
+      <div class="legal-body" id="prv-controller">
+        <p>andspire e.U. &mdash; Max Haditsch<br>
+        [Street, House No., Postal Code] Vienna, Austria<br>
+        Email: <a href="mailto:office@maxhaditsch.com">office@maxhaditsch.com</a></p>
+      </div>
+    </div>
+
+    <div class="legal-section">
+      <p class="legal-label">What Data We Collect</p>
+      <div class="legal-body" id="prv-data-collection">
+        <p>When you visit this website, your browser automatically transmits certain technical information to our server, including IP address, browser type, operating system, referring URL, and the date and time of access. This data is processed exclusively for the purpose of ensuring technical operation and security, and is deleted after a short retention period.</p>
+        <p>When you submit the contact form, we collect the information you provide (name, email address, and message). This data is used solely to respond to your enquiry and is not shared with third parties.</p>
+      </div>
+    </div>
+
+    <div class="legal-section">
+      <p class="legal-label">Legal Basis</p>
+      <div class="legal-body" id="prv-legal-basis">
+        <p>Processing of server log data is based on our legitimate interest in the secure and stable operation of this website (Art. 6 para. 1 lit. f GDPR). Processing of contact form data is based on your consent and the purpose of responding to your enquiry (Art. 6 para. 1 lit. b and f GDPR).</p>
+      </div>
+    </div>
+
+    <div class="legal-section">
+      <p class="legal-label">Content Management</p>
+      <div class="legal-body" id="prv-cms">
+        <p>This website uses Sanity (Sanity.io, Inc.) as a headless content management system. Content is retrieved via the Sanity API. No personal data from visitors is stored in or transmitted to Sanity. For more information, see <a href="https://www.sanity.io/legal/privacy" target="_blank" rel="noopener">sanity.io/legal/privacy</a>.</p>
+      </div>
+    </div>
+
+    <div class="legal-section">
+      <p class="legal-label">Cookies and Tracking</p>
+      <div class="legal-body" id="prv-cookies">
+        <p>This website does not use tracking cookies, analytics tools, or advertising technologies. No data is shared with advertising networks or third-party analytics providers.</p>
+      </div>
+    </div>
+
+    <div class="legal-section">
+      <p class="legal-label">Data Retention</p>
+      <div class="legal-body" id="prv-retention">
+        <p>Server log data is deleted automatically after 7 days. Contact form submissions are retained for as long as necessary to respond to your enquiry, and deleted thereafter unless a longer retention period is required by law.</p>
+      </div>
+    </div>
+
+    <hr class="legal-divider" />
+
+    <div class="legal-section">
+      <p class="legal-label">Your Rights</p>
+      <div class="legal-body" id="prv-rights">
+        <p>Under the GDPR, you have the right to access, rectification, erasure, restriction of processing, and data portability with respect to your personal data. You also have the right to object to processing based on legitimate interests.</p>
+        <p>To exercise any of these rights, please contact us at <a href="mailto:office@maxhaditsch.com">office@maxhaditsch.com</a>. You also have the right to lodge a complaint with the Austrian Data Protection Authority (Datenschutzbehorde): <a href="https://www.dsb.gv.at" target="_blank" rel="noopener">dsb.gv.at</a>.</p>
+      </div>
+    </div>
+
+    <div class="legal-section">
+      <p class="legal-label">Changes to This Policy</p>
+      <div class="legal-body" id="prv-changes">
+        <p>We reserve the right to update this Privacy Policy from time to time. The current version is always available at this URL.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER BAR -->
+  <div class="footer-bar">
+    <div class="footer-bar-col">
+      <span class="footer-bar-label">Based in</span>
+      <span class="footer-bar-val">Vienna, Austria</span>
+    </div>
+    <div class="footer-bar-col">
+      <span class="footer-bar-label">Contact</span>
+      <span class="footer-bar-val"><a href="mailto:office@maxhaditsch.com">office@maxhaditsch.com</a></span>
+    </div>
+    <div class="footer-bar-col">
+      <span class="footer-bar-val"><a href="imprint.html" class="hover-line">Imprint</a></span>
+      <span class="footer-bar-val"><a href="privacy.html" class="hover-line" style="opacity:1;font-weight:700;">Privacy Policy</a></span>
+    </div>
+  </div>
+
+  <script>
+    /* ─── CURSOR ─── */
+    const cursorEl = document.getElementById('cursor');
+    let mouseX = -100, mouseY = -100, curX = -100, curY = -100;
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+    document.addEventListener('mouseleave', () => cursorEl.classList.add('hidden'));
+    document.addEventListener('mouseenter', () => cursorEl.classList.remove('hidden'));
+    (function animateCursor() {
+      curX += (mouseX - curX) * 0.14;
+      curY += (mouseY - curY) * 0.14;
+      cursorEl.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(animateCursor);
+    })();
+    document.querySelectorAll('a, button, .controls-theme-toggle').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorEl.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursorEl.classList.remove('hover'));
+    });
+
+    /* ─── NAVIGATION ─── */
+    const menuOverlay = document.getElementById('menu-overlay');
+    const menuItems   = menuOverlay.querySelectorAll('.menu-item a');
+    const menuFooter  = menuOverlay.querySelector('.menu-footer');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+    const navMenuBtn  = document.getElementById('nav-menu-btn');
+    let menuOpen = false;
+      document.documentElement.style.overflow = '';
+
+    function openMenu() {
+      menuOpen = true;
+      document.documentElement.style.overflow = 'hidden';
+      menuOverlay.classList.add('open');
+      navMenuBtn.textContent = '';
+      gsap.to(menuOverlay,  { clipPath: 'inset(0 0 0% 0)', duration: 0.8, ease: 'power4.inOut' });
+      gsap.to(menuItems,    { y: '0%', duration: 0.9, stagger: 0.06, ease: 'power4.out', delay: 0.3 });
+      gsap.to(menuFooter,   { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.6 });
+      menuCloseBtn.style.pointerEvents = 'auto';
+      gsap.fromTo(menuCloseBtn, { y: -8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out', delay: 0.5 });
+    }
+    function closeMenu() {
+      menuOpen = false;
+      document.documentElement.style.overflow = '';
+      navMenuBtn.textContent = 'Menu';
+      gsap.to(menuItems,    { y: '100%', duration: 0.5, stagger: 0.04, ease: 'power3.in' });
+      gsap.to(menuFooter,   { opacity: 0, y: 20, duration: 0.3 });
+      gsap.to(menuCloseBtn, { opacity: 0, y: -8, duration: 0.3, onComplete: () => { menuCloseBtn.style.pointerEvents = 'none'; } });
+      gsap.to(menuOverlay,  { clipPath: 'inset(0 0 100% 0)', duration: 0.7, ease: 'power4.inOut', delay: 0.2,
+        onComplete: () => menuOverlay.classList.remove('open') });
+    }
+    navMenuBtn.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+    menuCloseBtn.addEventListener('click', closeMenu);
+    document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', closeMenu));
+
+    /* ─── ⌘K COMMAND PALETTE ─── */
+    const cmdOverlay = document.getElementById('cmd-overlay');
+    const cmdInput   = document.getElementById('cmd-input');
+    const getCR = () => document.querySelectorAll('#cmd-results .cmd-result');
+    let selectedIdx  = 0;
+
+    function openCmd()  { cmdOverlay.classList.add('open'); cmdInput.value = ''; cmdInput.focus(); resetCmd(); }
+    function closeCmd() { cmdOverlay.classList.remove('open'); }
+    function resetCmd() {
+      getCR().forEach((r, i) => { r.classList.toggle('active', i === 0); r.style.display = ''; });
+      selectedIdx = 0;
+    }
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); cmdOverlay.classList.contains('open') ? closeCmd() : openCmd(); }
+      if (e.key === 'Escape') { closeCmd(); if (menuOpen) closeMenu(); }
+      if (cmdOverlay.classList.contains('open')) {
+        const visible = [...getCR()].filter(r => r.style.display !== 'none');
+        if (e.key === 'ArrowDown') { e.preventDefault(); visible[selectedIdx]?.classList.remove('active'); selectedIdx = Math.min(selectedIdx + 1, visible.length - 1); visible[selectedIdx]?.classList.add('active'); }
+        if (e.key === 'ArrowUp')   { e.preventDefault(); visible[selectedIdx]?.classList.remove('active'); selectedIdx = Math.max(selectedIdx - 1, 0); visible[selectedIdx]?.classList.add('active'); }
+        if (e.key === 'Enter') { const a = visible[selectedIdx]; if (a) { window.location.href = a.dataset.href; closeCmd(); } }
+      }
+    });
+    cmdOverlay.addEventListener('click', e => { if (e.target === cmdOverlay) closeCmd(); });
+    cmdInput.addEventListener('input', () => {
+      const q = cmdInput.value.toLowerCase();
+      selectedIdx = 0;
+      getCR().forEach(r => { const label = r.querySelector('.cmd-result-label').textContent.toLowerCase(); r.style.display = (!q || label.includes(q)) ? '' : 'none'; r.classList.remove('active'); });
+      const first = [...getCR()].find(r => r.style.display !== 'none');
+      if (first) first.classList.add('active');
+    });
+    document.getElementById('nav-cmd').addEventListener('click', openCmd);
+
+    /* ─── THEME (persisted via sessionStorage — resets on new tab/session) ─── */
+    let currentTheme = 'dark'; try { currentTheme = sessionStorage.getItem('theme') || 'dark'; } catch(e) {}
+    function setTheme(t) {
+      currentTheme = t;
+      try { sessionStorage.setItem('theme', t); } catch(e) {}
+      document.documentElement.classList.toggle('light', t === 'light');
+    }
+    setTheme(currentTheme);
+    document.getElementById('controls-theme-toggle').addEventListener('click', () => setTheme(currentTheme === 'dark' ? 'light' : 'dark'));
+  </script>
+
+  <!-- SANITY CONTENT -->
+  <script src="sanity.js"></script>
+  <script>
+    (async () => {
+      try {
+        const d = await Sanity.getPrivacyPage();
+        if (!d) return;
+
+        function setBody(id, text) {
+          if (!text) return;
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = '<p>' + text.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+        }
+
+        setBody('prv-controller',     d.controllerText);
+        setBody('prv-data-collection', d.dataCollectionText);
+        setBody('prv-legal-basis',    d.legalBasisText);
+        setBody('prv-cms',            d.cmsText);
+        setBody('prv-cookies',        d.cookiesText);
+        setBody('prv-retention',      d.retentionText);
+        setBody('prv-rights',         d.rightsText);
+        setBody('prv-changes',        d.changesText);
+
+      } catch (e) {
+        console.warn('Privacy: Sanity fetch failed', e);
+      }
+    })();
+  </script>
+
+
+  <script>
+    Sanity.populateCmdPalette();
+  </script>
+
+</body>
+</html>

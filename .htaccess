@@ -1,0 +1,81 @@
+# ─────────────────────────────────────────────
+#  maxhaditsch.com – Apache Security Configuration
+#  Aktualisiert: 2026-04-22
+# ─────────────────────────────────────────────
+
+# Eigene Fehlerseite
+ErrorDocument 404 /404.html
+
+# ── 1. HTTPS-Redirect ────────────────────────
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ── 2. Security Headers ───────────────────────
+<IfModule mod_headers.c>
+    # HSTS – Browser muss für 1 Jahr ausschließlich HTTPS verwenden
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+    # Clickjacking verhindern
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # MIME-Sniffing verhindern
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Referrer-Informationen einschränken
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Browser-APIs einschränken (Kamera, Mikro, GPS etc.)
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()"
+
+    # XSS-Protection (für ältere Browser; modern: CSP übernimmt diese Rolle)
+    Header always set X-XSS-Protection "0"
+
+    # Content Security Policy
+    # Erlaubte Quellen basierend auf tatsächlich genutzten Diensten:
+    #   - use.typekit.net / p.typekit.net  → Adobe Typekit Fonts
+    #   - cdnjs.cloudflare.com             → GSAP, Lottie
+    #   - www.google.com / www.gstatic.com → reCAPTCHA
+    #   - cdn.sanity.io / *.api.sanity.io  → Projektbilder, Videos & CMS-API
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://use.typekit.net https://p.typekit.net; font-src 'self' https://use.typekit.net https://p.typekit.net; img-src 'self' data: https://cdn.sanity.io https://www.gstatic.com; media-src 'self' https://cdn.sanity.io; connect-src 'self' https://cdn.sanity.io https://*.api.sanity.io https://*.apicdn.sanity.io; frame-src https://www.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+
+    # Cross-Origin-Richtlinien
+    Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+    Header always set Cross-Origin-Resource-Policy "cross-origin"
+
+    # Server-Informationen ausblenden
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# ── 3. Sensible Dateien & Verzeichnisse sperren ──
+# .git-Verzeichnis komplett blockieren
+<IfModule mod_rewrite.c>
+    RewriteRule ^\.git - [F,L]
+</IfModule>
+
+# Sensible Dateitypen direkt blockieren
+<FilesMatch "(\.env|\.env\..*|\.htpasswd|\.DS_Store|composer\.lock|package-lock\.json|yarn\.lock|\.gitignore|\.gitattributes)$">
+    Require all denied
+</FilesMatch>
+
+# ── 4. Caching-Optimierung (Performance + Sicherheit) ──
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html                 "access plus 0 seconds"
+
+    # HTML nie cachen — Änderungen sind für alle Besucher sofort sichtbar
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+    ExpiresByType text/css                  "access plus 1 year"
+    ExpiresByType application/javascript    "access plus 1 year"
+    ExpiresByType image/jpeg                "access plus 1 year"
+    ExpiresByType image/png                 "access plus 1 year"
+    ExpiresByType image/svg+xml             "access plus 1 year"
+    ExpiresByType image/webp                "access plus 1 year"
+    ExpiresByType image/x-icon              "access plus 1 year"
+    ExpiresByType font/woff2                "access plus 1 year"
+</IfModule>
