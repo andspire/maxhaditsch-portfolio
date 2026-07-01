@@ -1,0 +1,25 @@
+# Next.js source (nicht deployen)
+node_modules/
+studio/
+.next/
+app/
+components/
+lib/
+
+# Next.js Konfigurationsdateien
+package.json
+package-lock.json
+tsconfig.json
+tailwind.config.ts
+postcss.config.js
+next.config.mjs
+next.config.ts
+next-env.d.ts
+
+# Scripts & Interna
+alt-patch.mjs
+seo-patch.mjs
+start-server.command
+TODO.md
+README.md
+.gitignore
